@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+
+# set image tag if it hasnt been set
+if [ -z "$IMAGE_TAG" ]; then
+  export IMAGE_TAG=$(git rev-parse HEAD)
+fi
+
+# login to docker hub
+docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+
+# build docker image
+docker build --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
+
+# push docker image
+docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+
