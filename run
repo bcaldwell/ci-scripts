@@ -17,13 +17,12 @@ do
   echo "Fetching and running ${file}"
   script_path=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-XXXXX)
 
-  wget -q "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" -O ${script_path}
-
-  if [ $? -ne 0 ]
-  then 
+  {
+    wget -q "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" -O ${script_path}
+  } || {
     echo "Unable to fetch ${file}"
     continue
-  fi
+  }
 
   ruby --disable-gems ${script_path} ${tempfile}
 
