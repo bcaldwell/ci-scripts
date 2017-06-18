@@ -14,7 +14,13 @@ wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/l
 # fetch and run reqested scripts
 for file in "$@"
 do
-    wget -qO- "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" | ruby /dev/stdin ${tempfile}
+  script_path=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-${file}-XXXXX.rb)
+
+  wget -qO- "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" -O script_path
+
+  ruby --disable-gems ${script_path} ${tempfile}
+
+  rm -f ${script_path}
 done
 
 # clean up

@@ -1,8 +1,15 @@
 #!/usr/bin/ruby
-puts ARGV[0]
 if ARGV[0]
+  unless File.file?(ARGV[0])
+    puts "Can't find base ruby file"
+    exit 1
+  end
   require ARGV[0]
 else
+  unless File.file?("../lib/base.rb")
+    puts "Can't find base ruby file"
+    exit 1
+  end
   require_relative "../lib/base.rb"
 end
 
