@@ -1,13 +1,21 @@
 #!/usr/bin/bash
 
-tempfile=$(mktemp $TMPDIR/$(uuidgen).rb)
-rm -f $tempfile
+# set TMPDIR to /tmp if it doesnt exist
+if [ -z "$TMPDIR" ]; then
+  export TMPDIR=/tmp
+fi
 
+# create temp file (dry run)
+tempfile=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-base-XXXXX.rb)
+
+# download base file to temp file
 wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/lib/base -O tempfile
 
+# fetch and run reqested scripts
 for file in "$@"
 do
     wget -qO- "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" | ruby /dev/stdin ${tempfile}
 done
 
+# clean up
 rm -f $tmpnam
