@@ -8,7 +8,8 @@ wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/s
 
 ```
 wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/run | bash -s \
-  docker/build
+  docker/build \
+  docker/lastest_master
 ```
 
 <!--Since this allows remove code execuation in the CI environment, it is suggested that this repo is forked so -->

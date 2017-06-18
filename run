@@ -19,6 +19,12 @@ do
 
   wget -q "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" -O ${script_path}
 
+  if [ $? -ne 0]
+  then 
+    echo "Unable to fetch ${file}"
+    continue
+  fi
+
   ruby --disable-gems ${script_path} ${tempfile}
 
   rm -f ${script_path}
