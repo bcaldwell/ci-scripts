@@ -9,7 +9,7 @@ fi
 tempfile=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-base-XXXXX.rb)
 
 # download base file to temp file
-wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/lib/base -O tempfile
+wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/lib/base.rb -O tempfile
 
 # fetch and run reqested scripts
 for file in "$@"
