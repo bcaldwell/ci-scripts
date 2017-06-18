@@ -1,16 +1,23 @@
-#!/usr/bin/bash
+#!/usr/bin/ruby
+if ARGV[0]
+  require ARGV[0]
+else
+  require_relative "../lib/base.rb"
+end
 
 # set image tag if it hasnt been set
-if [ -z "$IMAGE_TAG" ]; then
-  export IMAGE_TAG=$(git rev-parse HEAD)
-fi
+required_env("DOCKER_USERNAME")
+required_env("DOCKER_PASSWORD")
+required_env("DOCKER_IMAGE")
+
+env_check("IMAGE_TAG", `git rev-parse HEAD`)
+env_check("DOCKER_REGISTRY", "https://hub.docker.com")
 
 # login to docker hub
-docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')
 
 # build docker image
-docker build --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
+command('docker build --pull -t "$DOCKER_IMAGE:$IMAGE_TAG" .')
 
 # push docker image
-docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
-
+command('docker push "$DOCKER_IMAGE:$IMAGE_TAG"')

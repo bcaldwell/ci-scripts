@@ -1,0 +1,11 @@
+#!/usr/bin/ruby
+
+def command(*options)
+  puts("\x1b[34m#{options.join " "}\x1b[0m")
+  t = Time.now
+  system(*options)
+  puts("\x1b[32m#{(Time.now - t).round(2)}s\x1b[0m \n ")
+end
+
+command("cat ${TEST}")
+command("sleep", "1")

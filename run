@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+
+tempfile=$(mktemp $TMPDIR/$(uuidgen).rb)
+rm -f $tempfile
+
+wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/lib/base -O tempfile
+
+for file in "$@"
+do
+    wget -qO- "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" | ruby /dev/stdin ${tempfile}
+done
+
+rm -f $tmpnam
