@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-
+set -e
 # set TMPDIR to /tmp if it doesnt exist
 if [ -z "$TMPDIR" ]; then
   export TMPDIR=/tmp
@@ -9,14 +9,15 @@ fi
 tempfile=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-base-XXXXX.rb)
 
 # download base file to temp file
-wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/lib/base.rb -O tempfile
+wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/lib/base.rb -O ${tempfile}
 
 # fetch and run reqested scripts
 for file in "$@"
 do
-  script_path=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-${file}-XXXXX.rb)
+  echo "Fetching and running ${file}"
+  script_path=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-XXXXX)
 
-  wget -qO- "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" -O script_path
+  wget -q "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" -O ${script_path}
 
   ruby --disable-gems ${script_path} ${tempfile}
 

@@ -7,7 +7,7 @@ wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/s
 ```
 
 ```
-wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/run | bash /dev/stdin \
+wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/run | bash -s \
   docker/build
 ```
 
