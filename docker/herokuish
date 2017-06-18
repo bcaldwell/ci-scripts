@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+# Builds herokuish docker image
+# No dockerfile required
