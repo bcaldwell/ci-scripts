@@ -14,6 +14,8 @@ module Docker
       CMD ["/start", "web"]
     DOCKERFILE
 
+    log_info "Creating herokuish dockerfile\n "
+
     File.write("Dockerfile.herokuish", dockerfile_contents)
 
     ENV["BUILD_DOCKERFILE"] = "Dockerfile.herokuish"

@@ -2,11 +2,23 @@
 
 BASE_SCRIPT_PATH = "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/"
 
+def log_info(s)
+  puts("\x1b[34m#{s}\x1b[0m")
+end
+
+def log_success(s)
+  puts("\x1b[32m#{s}\x1b[0m")
+end
+
+def log_error(s)
+  puts("\x1b[31m#{s}\x1b[0m")
+end
+
 def command(*options)
-  puts("\x1b[34m#{options.join " "}\x1b[0m")
+  log_info(options.join " ")
   t = Time.now
   system(*options)
-  puts("\x1b[32m#{(Time.now - t).round(2)}s\x1b[0m \n ")
+  log_success("#{(Time.now - t).round(2)}s\n ")
 end
 
 def env_check(key, value)
@@ -18,7 +30,7 @@ end
 
 def required_env(key)
   unless ENV[key]
-    puts "\x1b[31mRequired environment variable #{key} not set\x1b[0m"
+    log_error "Required environment variable #{key} not set"
     exit 1
   end
 end
