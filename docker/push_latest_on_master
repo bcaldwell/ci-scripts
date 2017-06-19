@@ -14,7 +14,10 @@ require base_path
 
 module Docker
   extend self
-  def herokuish  
+  def push_lastest_on_master 
+    branch = `git rev-parse --abbrev-ref HEAD`.strip
+    return if branch != "master"
+
     # set image tag if it hasnt been set
     required_env("DOCKER_USERNAME")
     required_env("DOCKER_PASSWORD")
@@ -22,7 +25,16 @@ module Docker
 
     env_check("IMAGE_TAG", `git rev-parse HEAD`)
     env_check("DOCKER_REGISTRY", "https://hub.docker.com")
+
+    # login to docker hub
+    command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')
+
+    # tag latest image
+    command('docker "$DOCKER_IMAGE:$IMAGE_TAG" "$DOCKER_IMAGE:latest"')
+
+    # push docker image
+    command('docker push "$DOCKER_IMAGE:latest"')
   end
 end
 
-Docker.herokuish if __FILE__ == $PROGRAM_NAME
+Docker.push_lastest_on_master if __FILE__ == $PROGRAM_NAME
