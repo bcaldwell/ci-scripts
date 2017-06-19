@@ -1,28 +1,43 @@
 #!/usr/bin/ruby
-base_path = 
+
+module Docker
+  extend self
+  def herokuish  
+    # set image tag if it hasnt been set
+    dockerfile_contents = <<~DOCKERFILE
+      FROM gliderlabs/herokuish
+
+      COPY . /app
+
+      RUN /bin/herokuish buildpack build
+
+      CMD ["/start", "web"]
+    DOCKERFILE
+
+    File.write("Dockerfile.herokuish", dockerfile_contents)
+
+    ENV["BUILD_DOCKERFILE"] = "Dockerfile.herokuish"
+
+    run_script("docker/build")
+
+    Docker.build
+  end
+end
+
+# if main file require base and run main function
+if __FILE__ == $PROGRAM_NAME
+  base_path = 
   if ARGV[0]
     ARGV[0]
   else
     File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/base.rb'))
   end
 
-unless File.file?(base_path)
-  puts "Can't find base ruby file at #{base_path}"
-  exit 1
-end
-require base_path
-
-module Docker
-  extend self
-  def herokuish  
-    # set image tag if it hasnt been set
-    required_env("DOCKER_USERNAME")
-    required_env("DOCKER_PASSWORD")
-    required_env("DOCKER_IMAGE")
-
-    env_check("IMAGE_TAG", `git rev-parse HEAD`)
-    env_check("DOCKER_REGISTRY", "https://hub.docker.com")
+  unless File.file?(base_path)
+    puts "Can't find base ruby file at #{base_path}"
+    exit 1
   end
-end
+  require base_path
 
-Docker.herokuish if __FILE__ == $PROGRAM_NAME
+  Docker.herokuish
+end
