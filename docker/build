@@ -11,7 +11,7 @@ module Docker
     env_check("IMAGE_TAG", `git rev-parse HEAD`.strip)
     env_check("DOCKER_REGISTRY", "https://hub.docker.com")
 
-    dockerfile = from_env("BUILD_DOCKERFILE", "Dockerfile")
+    dockerfile = env_fetch("BUILD_DOCKERFILE", "Dockerfile")
 
     # login to docker hub
     command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')

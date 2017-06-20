@@ -1,6 +1,6 @@
 ##!/usr/bin/ruby
 
-BASE_SCRIPT_PATH = "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/"
+BASE_SCRIPT_PATH = "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/".freeze
 
 def log_info(s)
   puts("\x1b[34m#{s}\x1b[0m")
@@ -21,6 +21,13 @@ def command(*options)
   log_success("#{(Time.now - t).round(2)}s\n ")
 end
 
+def timed_run(name)
+  log_info(name)
+  t = Time.now
+  yield
+  log_success("#{(Time.now - t).round(2)}s\n ")
+end
+
 def env_check(key, value)
   unless ENV[key]
     puts "Setting #{key} to #{value}"
@@ -35,7 +42,7 @@ def required_env(key)
   end
 end
 
-def from_env(key, default="")
+def env_fetch(key, default="")
   if ENV[key]
     ENV[key]
   else
