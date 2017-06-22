@@ -14,7 +14,7 @@ require base_path
 
 module Docker
   extend self
-  def push_lastest_on_master 
+  def push_latest 
     latest_branch = env_fetch ("DOCKER_LATEST_BRANCH", "master")
 
     branch = `git rev-parse --abbrev-ref HEAD`.strip
@@ -41,4 +41,4 @@ module Docker
   end
 end
 
-Docker.push_lastest_on_master if __FILE__ == $PROGRAM_NAME
+Docker.push_latest if __FILE__ == $PROGRAM_NAME
