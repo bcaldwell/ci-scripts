@@ -32,7 +32,7 @@ module Docker
     command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')
 
     # tag latest image
-    command('docker "$DOCKER_IMAGE:$IMAGE_TAG" "$DOCKER_IMAGE:latest"')
+    command('docker tag "$DOCKER_IMAGE:$IMAGE_TAG" "$DOCKER_IMAGE:latest"')
 
     # push docker image
     command('docker push "$DOCKER_IMAGE:latest"')
