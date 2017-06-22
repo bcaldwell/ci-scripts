@@ -20,18 +20,11 @@ module Docker
     branch = `git rev-parse --abbrev-ref HEAD`.strip
     return if branch != latest_branch
 
-    # set image tag if it hasnt been set
-    required_env("DOCKER_USERNAME")
-    required_env("DOCKER_PASSWORD")
     required_env("DOCKER_IMAGE")
 
+    # set image tag if it hasnt been set
     env_check("IMAGE_TAG", `git rev-parse HEAD`)
-    env_check("DOCKER_REGISTRY", "https://hub.docker.com")
-    env_check("DOCKER_EMAIL", "ci@ci-runner.com")
-
-    # login to docker hub
-    command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" -e "$DOCKER_EMAIL" $DOCKER_REGISTRY')
-
+  
     # tag latest image
     command('docker tag "$DOCKER_IMAGE:$IMAGE_TAG" "$DOCKER_IMAGE:latest"')
 
