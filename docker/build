@@ -12,6 +12,7 @@ module Docker
     env_check("DOCKER_REGISTRY", "https://hub.docker.com")
 
     dockerfile = env_fetch("BUILD_DOCKERFILE", "Dockerfile")
+    project_folder = env_fetch("DOCKER_FOLDER", ".")
 
     # login to docker hub
     command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')

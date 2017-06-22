@@ -14,11 +14,11 @@ module Docker
       CMD ["/start", "web"]
     DOCKERFILE
 
-    log_info "Creating herokuish dockerfile\n "
+    timed_run "Creating herokuish dockerfile" do 
+      File.write("Dockerfile.herokuish", dockerfile_contents)
 
-    File.write("Dockerfile.herokuish", dockerfile_contents)
-
-    ENV["BUILD_DOCKERFILE"] = "Dockerfile.herokuish"
+      ENV["BUILD_DOCKERFILE"] = "Dockerfile.herokuish"
+    end
 
     run_script("docker/build")
 
