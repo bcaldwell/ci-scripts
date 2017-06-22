@@ -22,11 +22,12 @@ module Docker
 
     env_check("IMAGE_TAG", `git rev-parse HEAD`)
     env_check("DOCKER_REGISTRY", "https://hub.docker.com")
+    env_check("DOCKER_EMAIL", "ci@ci-runner.com")
 
     branch = `git rev-parse --abbrev-ref HEAD`.strip
 
     # login to docker hub
-    command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')
+    command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" -e "$DOCKER_EMAIL" $DOCKER_REGISTRY')
 
     # tag image
     command("docker tag \"$DOCKER_IMAGE:$IMAGE_TAG\" \"$DOCKER_IMAGE:#{branch}\""")
