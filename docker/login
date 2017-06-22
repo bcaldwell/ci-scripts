@@ -11,7 +11,7 @@ module Docker
     env_check("DOCKER_EMAIL", "ci@ci-runner.com")
 
     # login to docker hub
-    command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" -e "$DOCKER_EMAIL" $DOCKER_REGISTRY')
+    command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" -e "$DOCKER_EMAIL" "$DOCKER_REGISTRY"')
   end
 end
 
