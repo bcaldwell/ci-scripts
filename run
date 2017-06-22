@@ -16,7 +16,8 @@ for file in "$@"
 do
   echo "Fetching and running ${file}"
   script_path=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-XXXXX)
-  file='{$file=$file};1'
+  # remove whitespace
+  file="$(echo -e "${file}" | tr -d '[:space:]')"
   {
     wget -q "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/${file}" -O ${script_path}
   } || {
