@@ -15,7 +15,7 @@ require base_path
 module Docker
   extend self
   def push_latest 
-    latest_branch = env_fetch ("DOCKER_LATEST_BRANCH", "master")
+    latest_branch = env_fetch("DOCKER_LATEST_BRANCH", "master")
 
     branch = `git rev-parse --abbrev-ref HEAD`.strip
     return if branch != latest_branch
@@ -30,8 +30,6 @@ module Docker
 
     # login to docker hub
     command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')
-
-    
 
     # tag latest image
     command('docker "$DOCKER_IMAGE:$IMAGE_TAG" "$DOCKER_IMAGE:latest"')
