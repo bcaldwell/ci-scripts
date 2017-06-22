@@ -19,6 +19,7 @@ def command(*options)
   t = Time.now
   system(*options)
   log_success("#{(Time.now - t).round(2)}s\n ")
+  exit $?.exitstatus if $?.exitstatus != 0
 end
 
 def timed_run(name)

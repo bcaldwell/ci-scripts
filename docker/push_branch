@@ -29,10 +29,10 @@ module Docker
     command('docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" $DOCKER_REGISTRY')
 
     # tag image
-    command('docker tag "$DOCKER_IMAGE:$IMAGE_TAG" "$DOCKER_IMAGE:#{branch}"')
+    command("docker tag \"$DOCKER_IMAGE:$IMAGE_TAG\" \"$DOCKER_IMAGE:#{branch}\""")
 
     # push docker image
-    command('docker push "$DOCKER_IMAGE:#{branch}"')
+    command("docker push \"$DOCKER_IMAGE:#{branch}\"")
   end
 end
 
