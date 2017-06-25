@@ -1,7 +1,13 @@
 #!/usr/bin/ruby --disable-gems
-
-
 dir = File.join(File.dirname(__FILE__), '..')
+
+unless File.exist? dir
+  dir = if ENV[CI_SCRIPTS_INSTALL_LOCATION]
+    ENV[CI_SCRIPTS_INSTALL_LOCATION]
+  else
+    "/opt/ci-scripts"
+  end
+end
 
 $LOAD_PATH.unshift(dir)
 

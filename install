@@ -33,4 +33,4 @@ case "$install_version" in
     ;;
 esac
 
-export PATH=$PATH:$install_location/bin
+sudo ln -s /opt/ci-scripts/bin/ci-scripts /bin/ci-scripts
