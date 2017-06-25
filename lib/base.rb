@@ -58,7 +58,6 @@ def classify(s)
 end
 
 def run_script(script_name)
-  puts $LOAD_PATH
   require script_name
 
   script_parts = script_name.split("/")

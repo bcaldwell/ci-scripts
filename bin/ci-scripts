@@ -19,5 +19,6 @@ if ARGV.count <= 0
 end
 
 ARGV.each do |script_name|
+  script_name = script_name.strip
   run_script(script_name)
 end
