@@ -26,7 +26,8 @@ _ci_scripts_sudo() {
   if [ "$(whoami)" != "root" ]; then
       SUDO='sudo'
   fi
-  $SUDO $@
+  echo "$@"
+  $SUDO "$@"
 }
 
 case "$install_version" in
