@@ -17,13 +17,21 @@ _ci_scripts_install_version() {
   local extracted_folder="${TMPDIR}/ci-scripts-$1"
   wget "https://github.com/benjamincaldwell/ci-scripts/archive/v$1.tar.gz" -O "${tar_file}"
   tar -zxvf "${tar_file}" -C "${TMPDIR}"
-  sudo mv "${extracted_folder}" "${install_location}"
+  _ci_scripts_sudo mv "${extracted_folder}" "${install_location}"
   rm -rf "${extracted_folder}" "${tar_file}"
+}
+
+_ci_scripts_sudo() {
+  SUDO=''
+  if [ "$(whoami)" == "root" ]; then
+      SUDO='sudo'
+  fi
+  $SUDO $1
 }
 
 case "$install_version" in
   git)
-    sudo git clone git://github.com/benjamincaldwell/ci-scripts.git "${install_location}"
+    _ci_scripts_sudo git clone git://github.com/benjamincaldwell/ci-scripts.git "${install_location}"
     ;;
   latest)
     echo "guh"
