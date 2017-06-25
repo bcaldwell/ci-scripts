@@ -19,7 +19,7 @@ def command(*options)
   t = Time.now
   system(*options)
   log_success("#{(Time.now - t).round(2)}s\n ")
-  exit $CHILD_STATUS.exitstatus if $CHILD_STATUS.exitstatus != 0
+  exit $? if $? != 0
 end
 
 def timed_run(name)
