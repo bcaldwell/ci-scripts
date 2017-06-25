@@ -33,4 +33,4 @@ case "$install_version" in
     ;;
 esac
 
-sudo ln -s /opt/ci-scripts/bin/ci-scripts /bin/ci-scripts
+sudo ln -snf /opt/ci-scripts/bin/ci-scripts /usr/bin/ci-scripts
