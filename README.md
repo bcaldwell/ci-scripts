@@ -5,7 +5,6 @@ A collection of modular scripts that are commonly run in CI. The goal of this pr
 
 ```
 wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/install | bash
-export PATH=$PATH:/opt/ci-scripts/bin
 ci-scripts SCRIPT_NAME
 ```
 
