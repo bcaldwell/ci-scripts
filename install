@@ -26,7 +26,6 @@ _ci_scripts_sudo() {
   if [ "$(whoami)" != "root" ]; then
       SUDO='sudo'
   fi
-  echo "$@"
   $SUDO "$@"
 }
 
