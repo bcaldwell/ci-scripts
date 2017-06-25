@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/ruby --disable-gems
 
 if ARGV.count <= 0
   log_error "No script specified"

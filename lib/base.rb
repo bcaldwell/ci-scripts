@@ -69,5 +69,5 @@ def run_script(script_name)
     module_name += classify(part)
   end
 
-  eval("#{module_name}.#{function_name}")
+  Object.const_get(module_name).send(function_name)
 end
