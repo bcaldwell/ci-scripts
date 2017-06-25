@@ -23,7 +23,7 @@ _ci_scripts_install_version() {
 
 _ci_scripts_sudo() {
   SUDO=''
-  if [ "$(whoami)" == "root" ]; then
+  if [ "$(whoami)" != "root" ]; then
       SUDO='sudo'
   fi
   $SUDO $1
