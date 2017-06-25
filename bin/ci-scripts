@@ -1,7 +1,7 @@
 #!/usr/bin/ruby --disable-gems
 dir = File.join(File.dirname(__FILE__), '..')
 
-unless File.exist? File.join(dir, "lib/base")
+unless File.exist? File.join(dir, "lib/base.rb")
   dir = if ENV["CI_SCRIPTS_INSTALL_LOCATION"]
     ENV["CI_SCRIPTS_INSTALL_LOCATION"]
   else
