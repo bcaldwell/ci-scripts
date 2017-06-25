@@ -12,6 +12,9 @@ end
 $LOAD_PATH.unshift(dir)
 
 require "lib/base"
+# required for using english versions of ruby globals
+# https://github.com/CocoaPods/cocoapods-downloader/issues/28
+require "English"
 
 if ARGV.count <= 0
   log_error "No script specified"

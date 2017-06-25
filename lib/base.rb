@@ -19,7 +19,7 @@ def command(*options)
   t = Time.now
   system(*options)
   log_success("#{(Time.now - t).round(2)}s\n ")
-  exit $? if $? != 0
+  exit $CHILD_STATUS if $CHILD_STATUS != 0
 end
 
 def timed_run(name)
@@ -55,6 +55,11 @@ def classify(s)
   s = s.to_s.split('_').collect(&:capitalize).join
   s[0] = s[0].capitalize
   s
+end
+
+def unindent(s)
+  indent = s.split("\n").select { |line| !line.strip.empty? }.map { |line| line.index(/[^\s]/) }.compact.min || 0
+  s.gsub(/^[[:blank:]]{#{indent}}/, '')
 end
 
 def run_script(script_name)

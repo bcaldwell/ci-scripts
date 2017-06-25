@@ -4,14 +4,16 @@ module Docker
     # set image tag if it hasnt been set
     # also has to support old ruby versions
     dockerfile_contents = <<-DOCKERFILE
-FROM gliderlabs/herokuish
+      FROM gliderlabs/herokuish
 
-COPY . /app
+      COPY . /app
 
-RUN /bin/herokuish buildpack build
+      RUN /bin/herokuish buildpack build
 
-CMD ["/start", "web"]
+      CMD ["/start", "web"]
     DOCKERFILE
+
+    dockerfile_contents = unindent(dockerfile_contents)
 
     timed_run "Creating herokuish dockerfile" do
       File.write("Dockerfile.herokuish", dockerfile_contents)
