@@ -1,17 +1,3 @@
-#!/usr/bin/ruby
-base_path = 
-  if ARGV[0]
-    ARGV[0]
-  else
-    File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/base.rb'))
-  end
-
-unless File.file?(base_path)
-  puts "Can't find base ruby file at #{base_path}"
-  exit 1
-end
-require base_path
-
 module Docker
   extend self
   def push_branch

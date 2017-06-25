@@ -1,12 +1,10 @@
-#!/usr/bin/ruby
-
 module Docker
   extend self
   def login
     # set image tag if it hasnt been set
     required_env("DOCKER_USERNAME")
     required_env("DOCKER_PASSWORD")
-   
+
     env_check("DOCKER_EMAIL", "ci@ci-runner.com")
 
     docker_registry = env_fetch("DOCKER_REGISTRY", nil)
@@ -18,20 +16,4 @@ module Docker
   end
 end
 
-# if main file require base and run main function
-if __FILE__ == $PROGRAM_NAME
-  base_path = 
-  if ARGV[0]
-    ARGV[0]
-  else
-    File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib/base.rb'))
-  end
-
-  unless File.file?(base_path)
-    puts "Can't find base ruby file at #{base_path}"
-    exit 1
-  end
-  require base_path
-
-  Docker.login if __FILE__ == $PROGRAM_NAME
-end
+Docker.login if __FILE__ == $PROGRAM_NAME

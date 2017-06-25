@@ -1,0 +1,16 @@
+#!/usr/bin/ruby
+
+if ARGV.count <= 0
+  log_error "No script specified"
+  exit 1
+end
+
+dir = File.join(File.dirname(__FILE__), '..')
+
+$LOAD_PATH.unshift(dir)
+
+require "lib/base"
+
+script_name = ARGV.shift
+
+run_script(script_name)

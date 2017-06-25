@@ -1,4 +1,4 @@
-##!/usr/bin/ruby
+# #!/usr/bin/ruby
 
 BASE_SCRIPT_PATH = "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/".freeze
 
@@ -15,11 +15,11 @@ def log_error(s)
 end
 
 def command(*options)
-  log_info(options.join " ")
+  log_info(options.join(" "))
   t = Time.now
   system(*options)
   log_success("#{(Time.now - t).round(2)}s\n ")
-  exit $?.exitstatus if $?.exitstatus != 0
+  exit $CHILD_STATUS.exitstatus if $CHILD_STATUS.exitstatus != 0
 end
 
 def timed_run(name)
@@ -43,7 +43,7 @@ def required_env(key)
   end
 end
 
-def env_fetch(key, default="")
+def env_fetch(key, default = "")
   if ENV[key]
     ENV[key]
   else
@@ -51,15 +51,23 @@ def env_fetch(key, default="")
   end
 end
 
-def run_script(path)
-  require 'net/http' unless defined? Net::HTTP
-  uri = URI.join(BASE_SCRIPT_PATH, path)
-  res = Net::HTTP.get_response(uri)
+def classify(s)
+  s = s.to_s.split('_').collect(&:capitalize).join
+  s[0] = s[0].capitalize
+  s
+end
 
-  unless res.code == "200"
-    puts "Unable to fetch #{path}\n"
-    exit 1
+def run_script(script_name)
+  require script_name
+
+  script_parts = script_name.split("/")
+  function_name = script_parts.pop
+  module_name = ""
+
+  script_parts.each do |part|
+    module_name += "::" unless module_name.empty?
+    module_name += classify(part)
   end
 
-  eval(res.body)
+  eval("#{module_name}.#{function_name}")
 end

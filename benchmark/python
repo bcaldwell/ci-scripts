@@ -1,6 +1,0 @@
-#!/usr/bin/python3
-from subprocess import call
-
-for i in range(10000):
-  call(["ls"])
-  print "Hello " + str(i)
