@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby --disable-gems
+#!/usr/bin/env ruby
 dir = File.join(File.dirname(__FILE__), '..')
 
 unless File.exist? File.join(dir, "lib/base.rb")
