@@ -23,7 +23,7 @@ _ci_scripts_install_version() {
 
 case "$install_version" in
   git)
-    sudo git clone https://github.com/benjamincaldwell/ci-scripts.git "${install_location}"
+    sudo git clone git://github.com/benjamincaldwell/ci-scripts.git "${install_location}"
     ;;
   latest)
     echo "guh"
