@@ -1,12 +1,10 @@
 #!/usr/bin/bash
 set -e
+
 # set TMPDIR to /tmp if it doesnt exist
 if [ -z "$TMPDIR" ]; then
   export TMPDIR=/tmp
 fi
-
-# create temp file (dry run)
-# tempfile=$(mktemp --tmpdir=$TMPDIR -u ci-scripts-base-XXXXX.rb)
 
 install_location=${CI_SCRIPTS_INSTALL_LOCATION:="/opt/ci-scripts"}
 
@@ -14,9 +12,18 @@ install_version=${CI_SCRIPTS_VERSION:="latest"}
 
 echo "Installing ci-scripts-${install_version} to ${install_location}"
 
+_ci_scripts_install_version() {
+  local tar_file="${TMPDIR}/ci-scripts.tar.gz"
+  local extracted_folder="${TMPDIR}/ci-scripts-$1"
+  wget "https://github.com/benjamincaldwell/ci-scripts/archive/v$1.tar.gz" -O "${tar_file}"
+  tar -zxvf "${tar_file}" -C "${TMPDIR}"
+  sudo mv "${extracted_folder}" "${install_location}"
+  rm -rf "${extracted_folder}" "${tar_file}"
+}
+
 case "$install_version" in
   git)
-    git clone https://github.com/benjamincaldwell/ci-scripts.git install_location
+    sudo git clone https://github.com/benjamincaldwell/ci-scripts.git "${install_location}"
     ;;
   latest)
     echo "guh"
@@ -25,13 +32,5 @@ case "$install_version" in
     _ci_scripts_install_version "$install_version"
     ;;
 esac
-
-_ci_scripts_install_version() {
-  local extracted_folder="${install_location}/ci-scripts-$1"
-  mkdir -p "${install_location}"
-  wget -qO- "https://github.com/benjamincaldwell/ci-scripts/archive/v$1.tar.gz" | tar zxvf -C
-  mv "${extracted_folder}/*" "${install_location}"
-  rm -rf "${extracted_folder}"
-}
 
 export PATH=$PATH:$install_location/bin
