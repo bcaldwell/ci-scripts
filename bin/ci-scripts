@@ -12,6 +12,6 @@ if ARGV.count <= 0
   exit 1
 end
 
-script_name = ARGV.shift
-
-run_script(script_name)
+ARGV.each do |script_name|
+  run_script(script_name)
+end
