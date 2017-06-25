@@ -1,0 +1,19 @@
+image: "ruby:2.3"
+
+# Cache gems in between builds
+cache:
+  paths:
+    - vendor/ruby
+
+# This is a basic example for a gem or script which doesn't use
+before_script:
+  - ruby -v                                   # Print out ruby version for debugging
+  # Uncomment next line if your rails app needs a JS runtime:
+  # - apt-get update -q && apt-get install nodejs -yqq
+  - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
+
+# Optional - Delete if not using `rubocop`
+rubocop:
+  script:
+  - gem install rubocop
+  - rubocop
