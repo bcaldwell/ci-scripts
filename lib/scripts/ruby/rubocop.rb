@@ -10,5 +10,3 @@ module Ruby
     command("rubocop")
   end
 end
-
-Ruby.rubocop if __FILE__ == $PROGRAM_NAME

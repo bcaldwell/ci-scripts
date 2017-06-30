@@ -24,5 +24,3 @@ module Docker
     run_script("docker/build")
   end
 end
-
-Docker.herokuish if __FILE__ == $PROGRAM_NAME

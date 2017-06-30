@@ -15,5 +15,3 @@ module Docker
     command(login_command)
   end
 end
-
-Docker.login if __FILE__ == $PROGRAM_NAME

@@ -16,5 +16,3 @@ module Docker
     command('docker push "$DOCKER_IMAGE:$IMAGE_TAG"')
   end
 end
-
-Docker.build if __FILE__ == $PROGRAM_NAME

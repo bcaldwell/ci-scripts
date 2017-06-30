@@ -15,5 +15,3 @@ module Docker
     command("docker push \"$DOCKER_IMAGE:#{branch}\"")
   end
 end
-
-Docker.push_branch if __FILE__ == $PROGRAM_NAME

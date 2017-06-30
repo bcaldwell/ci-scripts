@@ -10,5 +10,3 @@ module Ruby
     end
   end
 end
-
-Ruby.bundler if __FILE__ == $PROGRAM_NAME

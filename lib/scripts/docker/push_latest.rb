@@ -18,5 +18,3 @@ module Docker
     command('docker push "$DOCKER_IMAGE:latest"')
   end
 end
-
-Docker.push_latest if __FILE__ == $PROGRAM_NAME

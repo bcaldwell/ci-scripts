@@ -6,5 +6,3 @@ module Git
     end
   end
 end
-
-Git.ssh_keys if __FILE__ == $PROGRAM_NAME

@@ -27,6 +27,8 @@ module CIScripts
       module_name += classify(part)
     end
 
-    Object.const_get(module_name).send(function_name)
+    result = Object.const_get(module_name).send(function_name)
+    return true if result.nil?
+    result
   end
 end
