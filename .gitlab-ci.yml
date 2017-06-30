@@ -8,10 +8,12 @@ cache:
 before_script:
   - ruby -v                                   # Print out ruby version for debugging
   - gem install ci-scripts
+  - ci-scripts ruby/bundler
 
 rubocop:
   script:
-  - ci-scripts ruby/bundler
   - ci-scripts ruby/rubocop
-  - ci-scripts ruby/rake_test
 
+test:
+  script:
+    - ci-scripts ruby/rake_test
