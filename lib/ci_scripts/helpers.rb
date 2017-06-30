@@ -13,7 +13,7 @@ def log_error(s)
   puts("\x1b[31m#{s}\x1b[0m")
 end
 
-def nice_exit(code, msg="Something happened")
+def nice_exit(code, msg = "Something happened")
   log_error(msg)
   exit code
 end
