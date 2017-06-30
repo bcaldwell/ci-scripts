@@ -11,5 +11,7 @@ before_script:
 
 rubocop:
   script:
+  - ci-scripts ruby/bundler
   - ci-scripts ruby/rubocop
+  - ci-scripts ruby/rake_test
 
