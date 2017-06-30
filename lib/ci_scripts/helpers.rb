@@ -1,7 +1,5 @@
 # #!/usr/bin/ruby
 
-BASE_SCRIPT_PATH = "https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/".freeze
-
 # Logging
 def log_info(s)
   puts("\x1b[34m#{s}\x1b[0m")
@@ -74,19 +72,4 @@ end
 def unindent(s)
   indent = s.split("\n").select { |line| !line.strip.empty? }.map { |line| line.index(/[^\s]/) }.compact.min || 0
   s.gsub(/^[[:blank:]]{#{indent}}/, '')
-end
-
-def run_script(script_name)
-  require script_name
-
-  script_parts = script_name.split("/")
-  function_name = script_parts.pop
-  module_name = ""
-
-  script_parts.each do |part|
-    module_name += "::" unless module_name.empty?
-    module_name += classify(part)
-  end
-
-  Object.const_get(module_name).send(function_name)
 end

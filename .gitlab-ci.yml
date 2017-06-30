@@ -5,12 +5,9 @@ cache:
   paths:
     - vendor/ruby
 
-variables:
-  CI_SCRIPTS_VERSION: git
-
 before_script:
   - ruby -v                                   # Print out ruby version for debugging
-  - wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/install | bash
+  - gem install ci-scripts
 
 rubocop:
   script:

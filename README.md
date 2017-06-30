@@ -4,7 +4,7 @@ A collection of modular scripts that are commonly run in CI. The goal of this pr
 
 
 ```
-wget -qO- https://raw.githubusercontent.com/benjamincaldwell/ci-scripts/master/install | bash
+gem install ci-scripts
 ci-scripts SCRIPT_NAME
 ```
 
