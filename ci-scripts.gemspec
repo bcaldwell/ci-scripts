@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Benjamin Caldwell"]
   spec.email         = ["caldwellbenjamin8@gmail.com"]
 
-  spec.summary       = %q(A collection fo scripts for commomly run scripts in CI.)
+  spec.summary       = "A collection fo scripts for commomly run scripts in CI."
   # spec.description   = %q{TODO: Write a longer description or delete this line.}
   spec.homepage      = "http://github.com/benjamincaldwell/ci-scripts"
   spec.license       = "MIT"
