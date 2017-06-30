@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+dir = File.join(File.dirname(__FILE__), '..')
+
+unless File.exist? File.join(dir, "lib/base.rb")
+  dir = if ENV["CI_SCRIPTS_INSTALL_LOCATION"]
+    ENV["CI_SCRIPTS_INSTALL_LOCATION"]
+  else
+    "/opt/ci-scripts"
+  end
+end
+
+$LOAD_PATH.unshift(dir)
+
+require "lib/base"
+# required for using english versions of ruby globals
+# https://github.com/CocoaPods/cocoapods-downloader/issues/28
+require "English"
+
+if ARGV.count <= 0
+  log_error "No script specified"
+  exit 1
+end
+
+ARGV.each do |script_name|
+  script_name = script_name.strip
+  run_script(script_name)
+end
