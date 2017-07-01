@@ -1,8 +1,9 @@
 module Git
-  extend self
-  def ssh_keys
-    timed_run "something" do
-      puts "hello"
+  class SshKeys
+    def run
+      timed_run "something" do
+        puts "hello"
+      end
     end
   end
 end

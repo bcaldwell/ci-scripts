@@ -7,28 +7,43 @@ require "ci_scripts/helpers"
 require "English"
 
 module CIScripts
-  def self.run_script(script_name)
-    script_name = script_name.strip
-    full_path = File.join(File.dirname(__FILE__), "scripts", script_name)
+  class Script
+    def initialize(script_name)
+      script_name = script_name.strip
+      full_path = File.join(File.dirname(__FILE__), "scripts", script_name)
 
-    unless File.exist?("#{full_path}.rb")
-      log_error "#{script_name} does not exists"
-      return false
+      unless File.exist?("#{full_path}.rb")
+        log_error "#{script_name} does not exists"
+        return
+      end
+
+      require full_path
+
+      @class_name = parse_script_name(script_name)
     end
 
-    require full_path
+    def run
+      return false unless @class_name
 
-    script_parts = script_name.split("/")
-    function_name = script_parts.pop
-    module_name = ""
-
-    script_parts.each do |part|
-      module_name += "::" unless module_name.empty?
-      module_name += classify(part)
+      result = Object.const_get(@class_name).new.send("run")
+      return true if result.nil?
+      result
     end
 
-    result = Object.const_get(module_name).send(function_name)
-    return true if result.nil?
-    result
+    private
+
+    def parse_script_name(script)
+      module_name = ""
+
+      script_parts = script.split("/")
+      # function_name = script_parts.pop
+
+      script_parts.each do |part|
+        module_name += "::" unless module_name.empty?
+        module_name += classify(part)
+      end
+
+      module_name
+    end
   end
 end

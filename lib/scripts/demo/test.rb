@@ -1,5 +1,6 @@
 module Demo
-  extend self
-  def test
+  class Test
+    def run
+    end
   end
 end

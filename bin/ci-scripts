@@ -13,5 +13,5 @@ if ARGV == ["version"]
 end
 
 ARGV.each do |script_name|
-  CIScripts.run_script(script_name)
+  CIScripts::Script.new(script_name).run
 end
