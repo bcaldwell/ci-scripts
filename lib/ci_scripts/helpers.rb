@@ -1,4 +1,5 @@
 # #!/usr/bin/ruby
+require 'open3'
 
 # Logging
 def log_info(s)
@@ -33,6 +34,11 @@ def timed_run(name)
   yield
   log_success("#{(Time.now - t).round(2)}s\n ")
 end
+
+def capture_command(*options)
+  Open3.capture2(*options)
+end
+
 
 # system helpers
 def test_command?(*options)
