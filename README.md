@@ -11,10 +11,14 @@ ci-scripts SCRIPT_NAME
 ## Scripts
 
 ### demo/test
-TODO: Some description of what I do
+
+
 
 ### docker/build
-TODO: Some description of what I do
+Uses docker to build the docker image for
+
+This script assumes the following binaries are installed:
+- docker
 
 #### Environment Variables
 
@@ -25,10 +29,14 @@ TODO: Some description of what I do
 | BUILD_DOCKERFILE | Dockerfile |  | |
 
 ### docker/herokuish
-TODO: Some description of what I do
+
+
+This script depends on and will run the following other scripts:
+- docker/build
 
 ### docker/login
-TODO: Some description of what I do
+
+
 
 #### Environment Variables
 
@@ -40,7 +48,8 @@ TODO: Some description of what I do
 | DOCKER_REGISTRY | i |  | |
 
 ### docker/push_branch
-TODO: Some description of what I do
+
+
 
 #### Environment Variables
 
@@ -50,7 +59,8 @@ TODO: Some description of what I do
 | IMAGE_TAG |  |  | |
 
 ### docker/push_latest
-TODO: Some description of what I do
+
+
 
 #### Environment Variables
 
@@ -61,10 +71,12 @@ TODO: Some description of what I do
 | IMAGE_TAG |  |  | |
 
 ### git/ssh_keys
-TODO: Some description of what I do
+
+
 
 ### ruby/bundler
-TODO: Some description of what I do
+
+
 
 #### Environment Variables
 
@@ -73,11 +85,14 @@ TODO: Some description of what I do
 | BUNDLER_INSTALL_PATH | vendor |  | |
 
 ### ruby/publish_gem
-TODO: Some description of what I do
+
+
 
 ### ruby/rake_test
-TODO: Some description of what I do
+
+
 
 ### ruby/rubocop
-TODO: Some description of what I do
+
+
 

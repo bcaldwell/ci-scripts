@@ -1,5 +1,17 @@
 module Docker
   class Build
+    class << self
+      def description
+        <<~MARKDOWN
+          Uses docker to build the docker image for the current project.
+        MARKDOWN
+      end
+
+      def bin_dependencies
+        ["docker"]
+      end
+    end
+
     def run
       required_env("DOCKER_IMAGE")
 

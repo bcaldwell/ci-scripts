@@ -4,9 +4,12 @@ require 'ripper'
 require 'erb'
 require 'pathname'
 
+require "ci_scripts"
+require "byebug"
+
 class FileParser
 
-  @@function_names = %w(required_env env_check env_fetch)
+  @@function_names = %w(required_env env_check env_fetch run_script)
   @@base_path = File.absolute_path(File.join(File.dirname(__FILE__), "../lib/scripts"))
 
   def self.base_path
@@ -17,7 +20,8 @@ class FileParser
     @file = file
 
     @data = {
-      "environment_variables" => {}
+      "environment_variables" => {},
+      "dependencies" => []
     }
 
     @contents = File.read(@file)
@@ -38,7 +42,20 @@ class FileParser
   def markdown
     text = <<~MARKDOWN
         ### <%= script_name %>
-        TODO: Some description of what I do
+        <%= script_class_obj.description.strip if script_class_obj.respond_to? :description %>
+
+        <% if script_class_obj.respond_to? :bin_dependencies -%>
+        This script assumes the following binaries are installed:
+        <% script_class_obj.bin_dependencies.each do |bin| -%>
+        - <%= bin %>
+        <% end -%>
+        <% end -%>
+        <% if @data["dependencies"].any? -%>
+        This script depends on and will run the following other scripts:
+        <% @data["dependencies"].each do |bin| -%>
+        - <%= bin %>
+        <% end -%>
+        <% end -%>
 
         <% if @data["environment_variables"].any? -%>
         #### Environment Variables
@@ -56,6 +73,11 @@ class FileParser
   end
 
   private
+  def script_class_obj
+    return @script_class if @script_class
+    class_name = CIScripts::Script.new(script_name).instance_variable_get(:@class_name)
+    @script_class = Object.const_get(class_name)
+  end
   
   # [:method_add_arg,
   #  [:fcall, [:@ident, "required_env", [4, 6]]],
@@ -107,6 +129,10 @@ class FileParser
       default: default_value || get_function_argument(ast, 1),
       description: comment_description(ast)
     }
+  end
+
+  def parse_run_script(ast)
+    @data["dependencies"].push(get_function_argument(ast,0))
   end
 
   def tree_search(ast, methods)
