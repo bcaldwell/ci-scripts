@@ -32,7 +32,7 @@ This script assumes the following binaries are installed:
 
 
 This script depends on and will run the following other scripts:
-- docker/build
+- [docker/build](#docker/build)
 
 ### docker/login
 
