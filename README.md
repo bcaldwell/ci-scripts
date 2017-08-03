@@ -45,7 +45,7 @@ This script depends on and will run the following other scripts:
 | DOCKER_USERNAME |  | ✔ | |
 | DOCKER_PASSWORD |  | ✔ | |
 | DOCKER_EMAIL | ci@ci-runner.com |  | |
-| DOCKER_REGISTRY | i |  | |
+| DOCKER_REGISTRY | hub.docker.com |  | |
 
 ### docker/push_branch
 
@@ -68,7 +68,7 @@ This script depends on and will run the following other scripts:
 |:---|:---|:---:|:---|
 | DOCKER_LATEST_BRANCH | master |  | |
 | DOCKER_IMAGE |  | ✔ | |
-| IMAGE_TAG |  |  | |
+| IMAGE_TAG | current git hash |  | |
 
 ### git/ssh_keys
 

@@ -7,6 +7,7 @@ module Docker
 
       env_check("DOCKER_EMAIL", "ci@ci-runner.com")
 
+      # Default: hub.docker.com
       docker_registry = env_fetch("DOCKER_REGISTRY", nil)
 
       # login to docker hub
