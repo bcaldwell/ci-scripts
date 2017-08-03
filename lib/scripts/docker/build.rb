@@ -4,6 +4,8 @@ module Docker
       required_env("DOCKER_IMAGE")
 
       # set image tag if it hasnt been set
+      # Default: git tag
+      # Description: My favoruite thing
       env_check("IMAGE_TAG", `git rev-parse HEAD`.strip)
 
       dockerfile = env_fetch("BUILD_DOCKERFILE", "Dockerfile")

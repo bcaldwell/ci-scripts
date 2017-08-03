@@ -39,7 +39,6 @@ def capture_command(*options)
   Open3.capture2(*options)
 end
 
-
 # system helpers
 def test_command?(*options)
   system(*options, out: File::NULL)
