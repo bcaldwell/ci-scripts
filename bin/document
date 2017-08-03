@@ -110,7 +110,7 @@ class FileParser
 
   def parse_required_env(ast)
     @data["environment_variables"][get_function_argument(ast, 0)] = {
-      required: "✓",
+      required: "✔",
       description: comment_description(ast)
     }
   end

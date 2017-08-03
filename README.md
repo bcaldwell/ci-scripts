@@ -24,7 +24,7 @@ This script assumes the following binaries are installed:
 
 | Variable | Default | Required | Description |
 |:---|:---|:---:|:---|
-| DOCKER_IMAGE |  | ✓ | |
+| DOCKER_IMAGE |  | ✔ | |
 | IMAGE_TAG | git tag |  | My favoruite thing|
 | BUILD_DOCKERFILE | Dockerfile |  | |
 
@@ -42,8 +42,8 @@ This script depends on and will run the following other scripts:
 
 | Variable | Default | Required | Description |
 |:---|:---|:---:|:---|
-| DOCKER_USERNAME |  | ✓ | |
-| DOCKER_PASSWORD |  | ✓ | |
+| DOCKER_USERNAME |  | ✔ | |
+| DOCKER_PASSWORD |  | ✔ | |
 | DOCKER_EMAIL | ci@ci-runner.com |  | |
 | DOCKER_REGISTRY | i |  | |
 
@@ -55,8 +55,8 @@ This script depends on and will run the following other scripts:
 
 | Variable | Default | Required | Description |
 |:---|:---|:---:|:---|
-| DOCKER_IMAGE |  | ✓ | |
-| IMAGE_TAG |  |  | |
+| DOCKER_IMAGE |  | ✔ | |
+| IMAGE_TAG | current git hash |  | |
 
 ### docker/push_latest
 
@@ -67,7 +67,7 @@ This script depends on and will run the following other scripts:
 | Variable | Default | Required | Description |
 |:---|:---|:---:|:---|
 | DOCKER_LATEST_BRANCH | master |  | |
-| DOCKER_IMAGE |  | ✓ | |
+| DOCKER_IMAGE |  | ✔ | |
 | IMAGE_TAG |  |  | |
 
 ### git/ssh_keys

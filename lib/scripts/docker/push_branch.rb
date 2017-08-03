@@ -4,6 +4,7 @@ module Docker
       required_env("DOCKER_IMAGE")
 
       # set image tag if it hasnt been set
+      # Default: current git hash
       env_check("IMAGE_TAG", `git rev-parse HEAD`.strip)
 
       branch = `git rev-parse --abbrev-ref HEAD`.strip
