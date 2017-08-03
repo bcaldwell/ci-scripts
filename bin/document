@@ -44,7 +44,7 @@ class FileParser
         #### Environment Variables
 
         | Variable | Default | Required | Description |
-        |:---|:---|:---|
+        |:---|:---|:---|:---|
         <% @data["environment_variables"].each do |key, val| -%>
         | <%= key %> | <%= val[:default] %> | <%= val[:required] %> | <%= val[:description] %>|
         <% end -%>

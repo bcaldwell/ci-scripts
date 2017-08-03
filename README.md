@@ -19,7 +19,7 @@ TODO: Some description of what I do
 #### Environment Variables
 
 | Variable | Default | Required | Description |
-|:---|:---|:---|
+|:---|:---|:---|:---|
 | DOCKER_IMAGE |  | ✔ | |
 | IMAGE_TAG | git tag |  | My favoruite thing|
 | BUILD_DOCKERFILE | Dockerfile |  | |
@@ -33,7 +33,7 @@ TODO: Some description of what I do
 #### Environment Variables
 
 | Variable | Default | Required | Description |
-|:---|:---|:---|
+|:---|:---|:---|:---|
 | DOCKER_USERNAME |  | ✔ | |
 | DOCKER_PASSWORD |  | ✔ | |
 | DOCKER_EMAIL | ci@ci-runner.com |  | |
@@ -45,7 +45,7 @@ TODO: Some description of what I do
 #### Environment Variables
 
 | Variable | Default | Required | Description |
-|:---|:---|:---|
+|:---|:---|:---|:---|
 | DOCKER_IMAGE |  | ✔ | |
 | IMAGE_TAG |  |  | |
 
@@ -55,7 +55,7 @@ TODO: Some description of what I do
 #### Environment Variables
 
 | Variable | Default | Required | Description |
-|:---|:---|:---|
+|:---|:---|:---|:---|
 | DOCKER_LATEST_BRANCH | master |  | |
 | DOCKER_IMAGE |  | ✔ | |
 | IMAGE_TAG |  |  | |
@@ -69,7 +69,7 @@ TODO: Some description of what I do
 #### Environment Variables
 
 | Variable | Default | Required | Description |
-|:---|:---|:---|
+|:---|:---|:---|:---|
 | BUNDLER_INSTALL_PATH | vendor |  | |
 
 ### ruby/publish_gem
