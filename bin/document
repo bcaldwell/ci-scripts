@@ -44,7 +44,7 @@ class FileParser
         #### Environment Variables
 
         | Variable | Default | Required | Description |
-        |:---|:---|:---|:---|
+        |:---|:---|:---:|:---|
         <% @data["environment_variables"].each do |key, val| -%>
         | <%= key %> | <%= val[:default] %> | <%= val[:required] %> | <%= val[:description] %>|
         <% end -%>
@@ -88,7 +88,7 @@ class FileParser
 
   def parse_required_env(ast)
     @data["environment_variables"][get_function_argument(ast, 0)] = {
-      required: "✔",
+      required: "✓",
       description: comment_description(ast)
     }
   end
