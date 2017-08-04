@@ -168,13 +168,13 @@ readme_text = <<-MARKDOWN
 
 MARKDOWN
 
+readme_text = unindent(readme_text)
+
 Dir.glob("#{FileParser.base_path}/**/*.rb") do |file|
   a = FileParser.new(file)
   a.parse
   readme_text += a.markdown
 end
-
-readme_text = unindent(readme_text)
 
 readme = File.join(File.dirname(__FILE__), "../README.md")
 File.write(readme, readme_text)

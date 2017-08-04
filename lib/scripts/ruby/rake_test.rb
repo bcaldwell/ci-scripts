@@ -6,10 +6,6 @@ module Ruby
           Runs ruby tests by executing the `rake test` command. Uses bundler if bundler is installed.
         MARKDOWN
       end
-
-      # def bin_dependencies
-      #   ["bundler"]
-      # end
     end
 
     def run

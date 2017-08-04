@@ -1,21 +1,21 @@
-  # CI Scripts
+# CI Scripts
 
-  A collection of modular scripts that are commonly run in CI. The goal of this project is to reduce the number of CI configuration files that have duplicate code. Environment variables are used to configure the scripts. To include a script add the following to the CI config:
+A collection of modular scripts that are commonly run in CI. The goal of this project is to reduce the number of CI configuration files that have duplicate code. Environment variables are used to configure the scripts. To include a script add the following to the CI config:
 
-  ## Installation
-  ```
-  gem install ci-scripts
-  ci-scripts SCRIPT_NAME
-  ```
+## Installation
+```
+gem install ci-scripts
+ci-scripts SCRIPT_NAME
+```
 
-  ## Scripts
+## Scripts
 
 ### demo/test
 
 
 
 ### docker/build
-Uses docker to build the docker image for
+Uses docker to build the docker image for the current project.
 
 This script assumes the following binaries are installed:
 - docker
@@ -89,7 +89,7 @@ This script depends on and will run the following other scripts:
 
 
 ### ruby/rake_test
-
+Runs ruby tests by executing the `rake test` command. Uses bundler if bundler is installed.
 
 
 ### ruby/rubocop
