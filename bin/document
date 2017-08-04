@@ -40,34 +40,36 @@ class FileParser
   end
 
   def markdown
-    text = <<~MARKDOWN
-        ### <%= script_name %>
-        <%= script_class_obj.description.strip if script_class_obj.respond_to? :description %>
+    text = <<-MARKDOWN
+      ### <%= script_name %>
+      <%= unindent(script_class_obj.description.strip) if script_class_obj.respond_to? :description %>
 
-        <% if script_class_obj.respond_to? :bin_dependencies -%>
-        This script assumes the following binaries are installed:
-        <% script_class_obj.bin_dependencies.each do |bin| -%>
-        - <%= bin %>
-        <% end -%>
-        <% end -%>
-        <% if @data["dependencies"].any? -%>
-        This script depends on and will run the following other scripts:
-        <% @data["dependencies"].each do |bin| -%>
-        - [<%= bin %>](#<%= bin %>)
-        <% end -%>
-        <% end -%>
+      <% if script_class_obj.respond_to? :bin_dependencies -%>
+      This script assumes the following binaries are installed:
+      <% script_class_obj.bin_dependencies.each do |bin| -%>
+      - <%= bin %>
+      <% end -%>
+      <% end -%>
+      <% if @data["dependencies"].any? -%>
+      This script depends on and will run the following other scripts:
+      <% @data["dependencies"].each do |bin| -%>
+      - [<%= bin %>](#<%= bin %>)
+      <% end -%>
+      <% end -%>
 
-        <% if @data["environment_variables"].any? -%>
-        #### Environment Variables
+      <% if @data["environment_variables"].any? -%>
+      #### Environment Variables
 
-        | Variable | Default | Required | Description |
-        |:---|:---|:---:|:---|
-        <% @data["environment_variables"].each do |key, val| -%>
-        | <%= key %> | <%= val[:default] %> | <%= val[:required] %> | <%= val[:description] %>|
-        <% end -%>
+      | Variable | Default | Required | Description |
+      |:---|:---|:---:|:---|
+      <% @data["environment_variables"].each do |key, val| -%>
+      | <%= key %> | <%= val[:default] %> | <%= val[:required] %> | <%= val[:description] %>|
+      <% end -%>
 
-        <% end -%>
-      MARKDOWN
+      <% end -%>
+    MARKDOWN
+
+    text = unindent(text)
 
     ERB.new(text,nil, '-').result(binding)
   end

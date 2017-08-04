@@ -2,7 +2,7 @@ module Docker
   class Build
     class << self
       def description
-        <<~MARKDOWN
+        <<-MARKDOWN
           Uses docker to build the docker image for the current project.
         MARKDOWN
       end
