@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# rubocop:disable Style/ClassVars
 
 require 'ripper'
 require 'erb'
@@ -8,7 +9,6 @@ require "ci_scripts"
 require "byebug"
 
 class FileParser
-
   @@function_names = %w(required_env env_check env_fetch run_script)
   @@base_path = File.absolute_path(File.join(File.dirname(__FILE__), "../lib/scripts"))
 
@@ -71,16 +71,17 @@ class FileParser
 
     text = unindent(text)
 
-    ERB.new(text,nil, '-').result(binding)
+    ERB.new(text, nil, '-').result(binding)
   end
 
   private
+
   def script_class_obj
     return @script_class if @script_class
     class_name = CIScripts::Script.new(script_name).instance_variable_get(:@class_name)
     @script_class = Object.const_get(class_name)
   end
-  
+
   # [:method_add_arg,
   #  [:fcall, [:@ident, "required_env", [4, 6]]],
   #  [:arg_paren,
@@ -103,11 +104,13 @@ class FileParser
   end
 
   def comment_default(ast, lines = 2)
-    comment_value(ast, /^# Default: (.*)$/i, lines)&.first
+    val = comment_value(ast, /^# Default: (.*)$/i, lines)
+    val.first if val
   end
 
   def comment_description(ast, lines = 2)
-    comment_value(ast, /^# Description: (.*)$/i, lines)&.first
+    val = comment_value(ast, /^# Description: (.*)$/i, lines)
+    val.first if val
   end
 
   def parse_required_env(ast)
@@ -134,7 +137,7 @@ class FileParser
   end
 
   def parse_run_script(ast)
-    @data["dependencies"].push(get_function_argument(ast,0))
+    @data["dependencies"].push(get_function_argument(ast, 0))
   end
 
   def tree_search(ast, methods)
@@ -150,7 +153,7 @@ class FileParser
   end
 end
 
-readme_text = <<~MARKDOWN
+readme_text = <<-MARKDOWN
   # CI Scripts
 
   A collection of modular scripts that are commonly run in CI. The goal of this project is to reduce the number of CI configuration files that have duplicate code. Environment variables are used to configure the scripts. To include a script add the following to the CI config:
@@ -170,6 +173,8 @@ Dir.glob("#{FileParser.base_path}/**/*.rb") do |file|
   a.parse
   readme_text += a.markdown
 end
+
+readme_text = unindent(readme_text)
 
 readme = File.join(File.dirname(__FILE__), "../README.md")
 File.write(readme, readme_text)
