@@ -13,7 +13,7 @@ module Docker
     end
 
     def run
-      required_env("DOCKER_IMAGE")
+      env_require("DOCKER_IMAGE")
 
       # set image tag if it hasnt been set
       # Default: git tag

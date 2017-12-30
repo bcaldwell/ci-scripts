@@ -2,8 +2,8 @@ module Docker
   class Login
     def run
       # set image tag if it hasnt been set
-      required_env("DOCKER_USERNAME")
-      required_env("DOCKER_PASSWORD")
+      env_require("DOCKER_USERNAME")
+      env_require("DOCKER_PASSWORD")
 
       env_check("DOCKER_EMAIL", "ci@ci-runner.com")
 

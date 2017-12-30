@@ -6,7 +6,7 @@ module Docker
       branch = `git rev-parse --abbrev-ref HEAD`.strip
       return if branch != latest_branch
 
-      required_env("DOCKER_IMAGE")
+      env_require("DOCKER_IMAGE")
 
       # set image tag if it hasnt been set
       # Default: current git hash

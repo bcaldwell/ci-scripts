@@ -1,7 +1,7 @@
 module Docker
   class PushBranch
     def run
-      required_env("DOCKER_IMAGE")
+      env_require("DOCKER_IMAGE")
 
       # set image tag if it hasnt been set
       # Default: current git hash

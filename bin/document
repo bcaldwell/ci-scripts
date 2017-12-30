@@ -9,7 +9,7 @@ require "ci_scripts"
 require "byebug"
 
 class FileParser
-  @@function_names = %w(required_env env_check env_fetch run_script)
+  @@function_names = %w(env_require env_check env_fetch run_script)
   @@base_path = File.absolute_path(File.join(File.dirname(__FILE__), "../lib/scripts"))
 
   def self.base_path
@@ -83,7 +83,7 @@ class FileParser
   end
 
   # [:method_add_arg,
-  #  [:fcall, [:@ident, "required_env", [4, 6]]],
+  #  [:fcall, [:@ident, "env_require", [4, 6]]],
   #  [:arg_paren,
   #   [:args_add_block,
   #    [[:string_literal,
@@ -113,7 +113,7 @@ class FileParser
     val.first if val
   end
 
-  def parse_required_env(ast)
+  def parse_env_require(ast)
     @data["environment_variables"][get_function_argument(ast, 0)] = {
       required: "✔",
       description: comment_description(ast)

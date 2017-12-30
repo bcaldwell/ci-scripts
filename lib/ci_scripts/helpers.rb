@@ -57,11 +57,13 @@ def env_check(key, value)
   end
 end
 
-def required_env(key)
-  unless ENV[key]
+def env_require(key)
+  val = ENV[key]
+  if val.nil?
     log_error "Required environment variable #{key} not set"
     exit 1
   end
+  val
 end
 
 def env_fetch(key, default = nil)
