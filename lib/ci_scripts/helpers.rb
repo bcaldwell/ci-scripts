@@ -64,7 +64,7 @@ def required_env(key)
   end
 end
 
-def env_fetch(key, default = "")
+def env_fetch(key, default = nil)
   if ENV[key]
     ENV[key]
   else
