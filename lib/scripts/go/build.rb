@@ -16,7 +16,7 @@ module Go
       build_command = add_option("ldflags", build_command)
 
       parallel = env_fetch("GO_BUILD_PARALLEL", "2")
-      build_command.push ("-parallel")
+      build_command.push("-parallel")
       build_command.push(parallel)
 
       build_command = add_option("osarch", build_command)
