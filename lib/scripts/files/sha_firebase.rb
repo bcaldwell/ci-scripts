@@ -19,7 +19,7 @@ module Files
       sha_folder = env_require("SHA_FOLDER")
 
       shas = {
-        :created => Firebase::ServerValue::TIMESTAMP
+        created: Firebase::ServerValue::TIMESTAMP
       }
 
       timed_run "Generating SHA256" do
@@ -38,9 +38,19 @@ module Files
         firebase = Firebase::Client.new(firebase_uri, firebase_api_key)
 
         url = File.join(git_url, sha_version)
+        latest_url = File.join(git_url, "latest")
         url = firebase_escape(url)
+        latest_url = firebase_escape(latest_url)
 
         response = firebase.set(url, shas)
+        unless response.code == 200
+          log_error("Failed to upload to Firebase")
+          nice_exit(0, response.body)
+        end
+
+        response = firebase.set(latest_url, {
+          version: sha_version,
+        }.merge!(shas))
         unless response.code == 200
           log_error("Failed to upload to Firebase")
           nice_exit(0, response.body)
