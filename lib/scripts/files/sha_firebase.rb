@@ -25,7 +25,7 @@ module Files
       timed_run "Generating SHA256" do
         sha256 = Digest::SHA256.new
 
-        return puts "#{sha_folder} does not exist" unless File.exists?(sha_folder)
+        return puts "#{sha_folder} does not exist" unless File.exist?(sha_folder)
 
         Dir.foreach(sha_folder) do |file|
           next if File.directory?(file)
@@ -62,12 +62,12 @@ module Files
 
     def git_url
       git_remotes = capture_command("git", "remote", "-v")
-      url = /(?:git@|https:\/\/)([^\s]+)/.match(git_remotes)[1]
-      url.gsub(":", "/")
+      url = %r{/(?:git@|https:\/\/)([^\s]+)/}.match(git_remotes)[1]
+      url.tr(":", "/")
     end
 
     def firebase_escape(s)
-      s.gsub(".", "_")
+      s.tr(".", "_")
     end
   end
 end
