@@ -1,5 +1,6 @@
 # #!/usr/bin/ruby
 require 'open3'
+require 'ci_scripts/dig'
 
 # Logging
 def log_info(s)
@@ -25,7 +26,10 @@ def command(*options)
   t = Time.now
   system(*options)
   log_success("#{(Time.now - t).round(2)}s\n ")
-  exit $CHILD_STATUS.exitstatus if $CHILD_STATUS && $CHILD_STATUS.exitstatus != 0
+  if $CHILD_STATUS && $CHILD_STATUS.exitstatus != 0
+    log_error("Exit status #{$CHILD_STATUS.exitstatus}")
+    exit $CHILD_STATUS.exitstatus
+  end
 end
 
 def timed_run(name)
@@ -36,7 +40,14 @@ def timed_run(name)
 end
 
 def capture_command(*options)
-  Open3.capture2(*options)
+  output, status = Open3.capture2(*options)
+  require "byebug"
+  unless status.success?
+    log_error("Attempted to capture output of `#{options.join ' '}` but received exit code #{status.to_i}")
+    log_error(output)
+    exit status.to_i
+  end
+  output
 end
 
 # system helpers
