@@ -28,10 +28,10 @@ module Files
         return puts "#{sha_folder} does not exist" unless File.exist?(sha_folder)
 
         Dir.foreach(sha_folder) do |file|
-          file = File.join(sha_folder, file)
-          next if File.directory?(file)
+          full_file = File.join(sha_folder, file)
+          next if File.directory?(full_file)
           escaped_filename = firebase_escape(file.to_s)
-          shas[escaped_filename.to_sym] = sha256.file(file).hexdigest
+          shas[escaped_filename.to_sym] = sha256.file(full_file).hexdigest
         end
       end
 
