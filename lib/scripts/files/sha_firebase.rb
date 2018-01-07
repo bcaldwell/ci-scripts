@@ -28,6 +28,7 @@ module Files
         return puts "#{sha_folder} does not exist" unless File.exist?(sha_folder)
 
         Dir.foreach(sha_folder) do |file|
+          file = File.join(sha_folder, file)
           next if File.directory?(file)
           escaped_filename = firebase_escape(file.to_s)
           shas[escaped_filename.to_sym] = sha256.file(file).hexdigest
@@ -62,7 +63,7 @@ module Files
 
     def git_url
       git_remotes = capture_command("git", "remote", "-v")
-      url = %r{/(?:git@|https:\/\/)([^\s]+)/}.match(git_remotes)[1]
+      url = %r{(?:git@|https:\/\/)([^\s]+)}.match(git_remotes)[1]
       url.tr(":", "/")
     end
 
