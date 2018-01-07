@@ -26,7 +26,8 @@ module Go
         build_command.concat(gox_args.split)
       end
 
-      command(*build_command)
+      # idk why this is needed...
+      command(build_command.join(" "))
     end
 
     private
