@@ -41,7 +41,6 @@ end
 
 def capture_command(*options)
   output, status = Open3.capture2(*options)
-  require "byebug"
   unless status.success?
     log_error("Attempted to capture output of `#{options.join ' '}` but received exit code #{status.to_i}")
     log_error(output)
