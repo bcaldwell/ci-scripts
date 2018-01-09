@@ -69,7 +69,7 @@ end
 
 def env_require(key)
   val = ENV[key]
-  if val.nil?
+  if val.nil? || val == ""
     log_error "Required environment variable #{key} not set"
     exit 1
   end
