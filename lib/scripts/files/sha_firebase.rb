@@ -62,6 +62,7 @@ module Files
     def git_url
       git_remotes = capture_command("git", "remote", "-v")
       url = %r{(?:git@|https:\/\/)([^\s]+)}.match(git_remotes)[1]
+      url = url.split(".git")[0]
       url.tr(":", "/")
     end
 
