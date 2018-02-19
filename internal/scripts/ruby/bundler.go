@@ -16,7 +16,7 @@ type Bundler struct{}
 // command("bundler", "install", "--path", install_path)
 // end
 
-func (b *Bundler) Run() {
+func (b *Bundler) Run() error {
 	if !c.CheckBinary("bundler") {
 		c.Command("gem", "install", "bundler", "--no-ri", "--no-rdoc")
 	}
@@ -25,4 +25,5 @@ func (b *Bundler) Run() {
 	if !c.TestCommand("bundler", "check") {
 		c.Command("bundler", "install", "--path", installPath)
 	}
+	return nil
 }
