@@ -4,6 +4,8 @@ import (
 	"os"
 
 	"gitlab.caldwellbenjam.in/benjamin/ci-scripts/internal/CIScriptsHelpers"
+	"gitlab.caldwellbenjam.in/benjamin/ci-scripts/internal/scripts/github"
+	"gitlab.caldwellbenjam.in/benjamin/ci-scripts/internal/scripts/go"
 	"gitlab.caldwellbenjam.in/benjamin/ci-scripts/internal/scripts/ruby"
 )
 
@@ -12,10 +14,14 @@ type script interface {
 }
 
 var scripts = map[string]script{
-	"ruby/bundler":    &CIScriptsRuby.Bundler{},
-	"ruby/rake_test":  &CIScriptsRuby.RakeTest{},
-	"ruby/rubocop":    &CIScriptsRuby.Rubocop{},
-	"ruby/PublishGem": &CIScriptsRuby.PublishGem{},
+	"ruby/bundler":     &CIScriptsRuby.Bundler{},
+	"ruby/rake_test":   &CIScriptsRuby.RakeTest{},
+	"ruby/rubocop":     &CIScriptsRuby.Rubocop{},
+	"ruby/publish_gem": &CIScriptsRuby.PublishGem{},
+
+	"go/build": &CIScriptsGo.Build{},
+
+	"github/release": &CIScriptsGithub.Release{},
 }
 
 func Execute() {

@@ -59,7 +59,7 @@ func ConfigSetDefault(key, value string) {
 
 // RequiredEnv ensures an environment variable is set. If it is not set, it will exit with status code 1
 func RequiredConfigKey(key string) {
-	if s := viper.GetString(key); s != "" {
+	if s := viper.GetString(key); s == "" {
 		PrettyExit(1, "Required environment variable %s not set", key)
 	}
 }

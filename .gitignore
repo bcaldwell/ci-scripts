@@ -54,3 +54,4 @@ build-iPhoneSimulator/
 /tmp/
 
 .byebug_history
+dist/release/**/*
