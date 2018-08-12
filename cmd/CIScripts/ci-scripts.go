@@ -21,7 +21,8 @@ var scripts = map[string]script{
 
 	"go/build": &CIScriptsGo.Build{},
 
-	"github/release": &CIScriptsGithub.Release{},
+	"github/release":           &CIScriptsGithub.Release{},
+	"github/release_checksums": &CIScriptsGithub.ReleaseChecksums{},
 }
 
 func Execute() {
@@ -30,7 +31,10 @@ func Execute() {
 	}
 	for _, scriptName := range os.Args[1:] {
 		if curScript, ok := scripts[scriptName]; ok {
-			curScript.Run()
+			err := curScript.Run()
+			if err != nil {
+				CIScriptsHelpers.LogError("Error in script %s: %s", scriptName, err)
+			}
 		} else {
 			CIScriptsHelpers.LogError("Script %s not found\n", scriptName)
 		}

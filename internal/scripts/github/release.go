@@ -17,6 +17,15 @@ func (b *Release) Run() error {
 	c.ConfigSetDefault("github.release.path", ".")
 	c.RequiredConfigKey("github.release.tag")
 
+	checksumsScripts := ReleaseChecksums{}
+
+	err := checksumsScripts.Run()
+	if err != nil {
+		c.LogError("Error in script github/release_checksums: %s", err)
+		// return nil cause error already logged here
+		return nil
+	}
+
 	if !c.CheckBinary("ghr") {
 		c.Command("go", "get", "-u", "github.com/tcnksm/ghr")
 	}

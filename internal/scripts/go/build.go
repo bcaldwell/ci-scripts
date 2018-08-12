@@ -62,7 +62,11 @@ func (b *Build) Run() error {
 		b.buildCommand = append(b.buildCommand, strings.Split(args, " ")...)
 	}
 
-	return c.Command(b.buildCommand...)
+	err := c.Command(b.buildCommand...)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (b *Build) addBuildOption(option string) {
