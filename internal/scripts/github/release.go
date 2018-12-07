@@ -3,7 +3,7 @@ package CIScriptsGithub
 import (
 	"fmt"
 
-	c "gitlab.caldwellbenjam.in/benjamin/ci-scripts/internal/CIScriptsHelpers"
+	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 )
 
 type Release struct {

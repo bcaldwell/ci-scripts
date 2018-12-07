@@ -1,19 +1,10 @@
 package CIScriptsRuby
 
 import (
-	c "gitlab.caldwellbenjam.in/benjamin/ci-scripts/internal/CIScriptsHelpers"
+	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 )
 
 type RakeTest struct{}
-
-// if test_command?("bundler", "exec", "rake", "-V")
-// return command("bundler", "exec", "rake", "test")
-// end
-
-// unless installed?("rake")
-// command("gem", "install", "rake")
-// end
-// command("rake", "test")
 
 func (r *RakeTest) Run() error {
 	// Use bundler version if installed

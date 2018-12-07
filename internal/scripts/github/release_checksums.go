@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	c "gitlab.caldwellbenjam.in/benjamin/ci-scripts/internal/CIScriptsHelpers"
+	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 )
 
 type ReleaseChecksums struct{}

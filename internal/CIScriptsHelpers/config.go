@@ -78,3 +78,7 @@ func ConfigFetch(key string, defaultValue ...string) (value string, ok bool) {
 
 	return value, ok
 }
+
+func GetCLIArguments() []string {
+	return os.Args[2:]
+}
