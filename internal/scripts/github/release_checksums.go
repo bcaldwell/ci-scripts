@@ -53,7 +53,7 @@ func (r *ReleaseChecksums) Run() error {
 				return err
 			}
 
-			output.WriteString(fmt.Sprintf("%s\t%x\n", filename, h.Sum(nil)))
+			output.WriteString(fmt.Sprintf("%x\t%s\n", filename, h.Sum(nil)))
 
 			return nil
 		})
