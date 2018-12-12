@@ -1,0 +1,29 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  release:
+    docker:
+      # specify the version
+      - image: circleci/golang:1.11
+    environment:
+      CI_SCRIPTS_CONFIG: ./.circleci/ci_scripts.yml
+      GITHUB_RELEASE_TAG: latest
+
+    working_directory: /go/src/github.com/bcaldwell/ci-scripts
+
+    steps:
+      - checkout
+
+      # specify any bash command here prefixed with `run: `
+      - run: env GO111MODULE=on go mod vendor
+      - run: go run ci-scripts.go go/build
+      - run: go run ci-scripts.go github/release
+
+workflows:
+  version: 2
+  release:
+    jobs:
+      - release
+

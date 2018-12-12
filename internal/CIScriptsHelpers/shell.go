@@ -69,7 +69,7 @@ func TimedRun(name string, function Run) error {
 		logger = LogError
 	}
 
-	logger("%fs \n", runTime)
+	logger("%fs", runTime)
 	return err
 }
 

@@ -3,6 +3,7 @@ package CIScriptsHelpers
 import (
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/viper"
@@ -37,6 +38,8 @@ func init() {
 	if configFile, ok = os.LookupEnv("CI_SCRIPTS_CONFIG"); !ok {
 		configFile = "./.ci_scripts"
 	}
+	// remove file extension
+	configFile = strings.TrimSuffix(configFile, filepath.Ext(configFile))
 
 	viper.SetConfigName(path.Base(configFile)) // no need to include file extension
 	viper.AddConfigPath(path.Dir(configFile))  // set the path of your config file
