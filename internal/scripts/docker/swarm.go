@@ -6,6 +6,8 @@ import (
 	"github.com/kevinburke/ssh_config"
 	"os"
 	"path"
+	"path/filepath"
+	"strings"
 )
 
 // docker/build_and_deploy folder --copy-dockerfile-to-root --build-arg (arg passed to docker build)
@@ -17,7 +19,6 @@ func (BuildAndDeploy) Run() error {
 	deployStack, _ := c.ConfigFetch("docker.swarm.stack", folder)
 	deployFile := c.RequiredConfigFetch("docker.swarm.deployfile")
 	host := c.RequiredConfigFetch("docker.swarm.host")
-
 	dockerSock := path.Join(os.TempDir(), "/docker.sock")
 
 	// probably need to check if its a full path first...
@@ -48,6 +49,16 @@ func (BuildAndDeploy) Run() error {
 		keyfile, _ = sshConfig.Get(host, "IdentityFile")
 		if keyfile != "" {
 			sshTun.SetKeyFile(keyfile)
+		} else {
+			// use ssh key if there is only 1 in ~/.ssh folder
+			keys, _ := filepath.Glob(path.Join(os.Getenv("HOME"), ".ssh", "id_*"))
+			keys = c.Filter(keys, func(s string) bool {
+				return !strings.HasSuffix(s, ".pub")
+			})
+
+			if len(keys) == 1 {
+				sshTun.SetKeyFile(keys[0])
+			}
 		}
 	}
 

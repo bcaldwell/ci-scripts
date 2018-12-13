@@ -37,6 +37,7 @@ var scripts = map[string]script{
 func Execute() {
 	if len(os.Args) <= 1 {
 		CIScriptsHelpers.LogError("No scripts specified")
+		os.Exit(0)
 	}
 
 	CIScriptsHelpers.ParseCLIArguments()
