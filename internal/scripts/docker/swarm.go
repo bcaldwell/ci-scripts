@@ -13,10 +13,14 @@ type BuildAndDeploy struct{}
 
 func (BuildAndDeploy) Run() error {
 	folder, _ := c.ConfigFetch("docker.swarm.folder", ".")
-	deployFile := c.RequiredConfigFetch("docker.swarm.deployFile")
-	masterIP := c.RequiredConfigFetch("docker.swarm.masterIP")
+	deployStack, _ := c.ConfigFetch("docker.swarm.stack", folder)
+	deployFile := c.RequiredConfigFetch("docker.swarm.deployfile")
+	masterIP := c.RequiredConfigFetch("docker.swarm.host")
 
 	dockerSock := path.Join(os.TempDir(), "/docker.sock")
+
+	// probably need to check if its a full path first...
+	deployFile = path.Join(folder, deployFile)
 
 	if _, err := os.Stat(dockerSock); !os.IsNotExist(err) {
 		// path/to/whatever exists
@@ -29,7 +33,7 @@ func (BuildAndDeploy) Run() error {
 		sshTun.SetUser(user)
 	}
 
-	if keyfile, ok := c.ConfigFetch("docker.swarm.keyFile"); ok {
+	if keyfile, ok := c.ConfigFetch("docker.swarm.keyfile"); ok {
 		sshTun.SetKeyFile(keyfile)
 	}
 
@@ -42,7 +46,7 @@ func (BuildAndDeploy) Run() error {
 
 	//         docker -H localhost:2374 stack deploy --compose-file deploy/jupyterhub.yml jupyterhub
 
-	c.Command("docker", "-H", "unix://"+dockerSock, "stack", "deploy", deployFile, folder)
+	c.Command("docker", "-H", "unix://"+dockerSock, "stack", "deploy", "--compose-file", deployFile, deployStack)
 	sshTun.Stop()
 
 	return nil

@@ -14,7 +14,7 @@ func (BuildAndPushImage) Run() error {
 
 	c.LogInfo("Build %s from folder %s", dockerRepo, folder)
 
-	// dockerUser, _ := c.ConfigFetch("docker.user")
+	dockerUser, _ := c.ConfigFetch("docker.user")
 
 	gitSha, _ := c.CaptureCommand("git", "rev-parse", "HEAD")
 	dockerTag, _ := c.ConfigFetch("docker.tag", strings.TrimSpace(string(gitSha)))
@@ -31,7 +31,7 @@ func (BuildAndPushImage) Run() error {
 	}
 
 	dockerRepoWithTag := fmt.Sprintf("%s:%s", dockerRepo, dockerTag)
-	// c.Command("docker", "login", "-u", dockerUser, "-p", "$DOCKER_PASS")
+	c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", dockerUser))
 	err = c.Command("docker", "tag", dockerRepo, dockerRepoWithTag)
 	if err != nil {
 		return err
