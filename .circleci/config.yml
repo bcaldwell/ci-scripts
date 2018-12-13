@@ -17,9 +17,9 @@ jobs:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: env GO111MODULE=on go mod vendor
-      - run: go run ci-scripts.go go/build
-      - run: go run ci-scripts.go github/release
+      - run: env GO111MODULE=on go install ci-scripts.go
+      - run: ci-scripts go/build
+      - run: ci-scripts github/release
 
 workflows:
   version: 2
