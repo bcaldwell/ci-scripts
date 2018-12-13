@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
+	CIScriptsDocker "github.com/bcaldwell/ci-scripts/internal/scripts/docker"
 	CIScriptsGit "github.com/bcaldwell/ci-scripts/internal/scripts/git"
 	CIScriptsGithub "github.com/bcaldwell/ci-scripts/internal/scripts/github"
 	CIScriptsGo "github.com/bcaldwell/ci-scripts/internal/scripts/go"
@@ -26,6 +27,8 @@ var scripts = map[string]script{
 
 	"git/files_changed": &CIScriptsGit.FilesChanged{},
 
+	"docker/build_and_deploy": &CIScriptsDocker.BuildAndDeploy{},
+
 	"github/release":           &CIScriptsGithub.Release{},
 	"github/release_checksums": &CIScriptsGithub.ReleaseChecksums{},
 }
@@ -34,7 +37,9 @@ func Execute() {
 	if len(os.Args) <= 1 {
 		CIScriptsHelpers.LogError("No scripts specified")
 	}
-	// for _, scriptName := range os.Args[1:] {
+
+	CIScriptsHelpers.ParseCLIArguments()
+
 	scriptName := os.Args[1]
 	if curScript, ok := scripts[scriptName]; ok {
 		err := curScript.Run()
@@ -51,5 +56,4 @@ func Execute() {
 	} else {
 		CIScriptsHelpers.LogError("Script %s not found\n", scriptName)
 	}
-	// }
 }

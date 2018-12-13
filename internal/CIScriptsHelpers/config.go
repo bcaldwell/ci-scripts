@@ -7,30 +7,8 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+	"regexp"
 )
-
-// # env helpers
-// def env_check(key, value)
-//   unless ENV[key]
-//     puts "Setting #{key} to #{value}"
-//     ENV[key] = value
-//   end
-// end
-
-// def required_env(key)
-//   unless ENV[key]
-//     log_error "Required environment variable #{key} not set"
-//     exit 1
-//   end
-// end
-
-// def env_fetch(key, default = "")
-//   if ENV[key]
-//     ENV[key]
-//   else
-//     default
-//   end
-// end
 
 func init() {
 	var configFile string
@@ -82,6 +60,34 @@ func ConfigFetch(key string, defaultValue ...string) (value string, ok bool) {
 	return value, ok
 }
 
-func GetCLIArguments() []string {
-	return os.Args[2:]
+func RequiredConfigFetch(key string) (value string) {
+	if s, ok := ConfigFetch(key); ok {
+		PrettyExit(1, "Required configuration variable %s not set", key)
+	} else {
+		return s
+	}
+}
+
+func ParseCLIArguments() {
+	flagParser, _ := regexp.Compile("--?([^=]+)=?(.+)?")
+
+	flagName := ""
+
+	for _, arg := range os.Args[1:] {
+		if strings.HasPrefix(arg, "-") {
+			match := flagParser.FindStringSubmatch(arg)
+			if len(match) < 1 {
+				LogError("Failed to parse flag with regex --?([^=]+)=?(.+): ", arg)
+			}
+			flagName = strings.Replace(match[1], "-", ".", -1)
+
+			if len(match) == 3 && match[2] != "" {
+				viper.Set(flagName, match[2])
+				flagName = ""
+			}
+		} else if flagName != "" {
+			viper.Set(flagName, arg)
+			flagName = ""
+		}
+	}
 }

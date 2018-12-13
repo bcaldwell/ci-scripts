@@ -40,7 +40,7 @@ import (
 type Run func() error
 
 func Command(args ...string) error {
-	TimedRun(strings.Join(args, " "), func() error {
+	return TimedRun(strings.Join(args, " "), func() error {
 		cmd := exec.Command(args[0], args[1:]...)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
@@ -51,7 +51,6 @@ func Command(args ...string) error {
 		err = cmd.Wait()
 		return err
 	})
-	return nil
 }
 
 func TimedRun(name string, function Run) error {
