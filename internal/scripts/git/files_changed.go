@@ -13,7 +13,7 @@ type FilesChanged struct {
 }
 
 func (b *FilesChanged) Run() error {
-	changePatterns := c.GetCLIArguments()
+	changePatterns := strings.Split(c.RequiredConfigFetch("git.files_changed.pattern"), ",")
 	if len(changePatterns) == 0 {
 		c.LogError("No file patterns to check passed in as CLI arguments")
 		return nil
@@ -26,6 +26,7 @@ func (b *FilesChanged) Run() error {
 	filesChanged := strings.Split(string(result), "\n")
 
 	for _, pattern := range changePatterns {
+		pattern = strings.TrimSpace(pattern)
 		for _, file := range filesChanged {
 			matched, err := regexp.MatchString(pattern, file)
 			if err != nil {

@@ -61,11 +61,12 @@ func ConfigFetch(key string, defaultValue ...string) (value string, ok bool) {
 }
 
 func RequiredConfigFetch(key string) (value string) {
-	if s, ok := ConfigFetch(key); ok {
+	if s, ok := ConfigFetch(key); !ok {
 		PrettyExit(1, "Required configuration variable %s not set", key)
 	} else {
 		return s
 	}
+	return ""
 }
 
 func ParseCLIArguments() {

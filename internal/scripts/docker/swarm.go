@@ -1,35 +1,13 @@
 package CIScriptsDocker
 
 import (
-	"flag"
-	"fmt"
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 	"github.com/bcaldwell/sshtun"
 	"os"
 	"path"
-	"strings"
-	// "log"
-	// "time"
 )
 
 // docker/build_and_deploy folder --copy-dockerfile-to-root --build-arg (arg passed to docker build)
-
-func init() {
-	flag.Var(&dockerBuildArg, "build-arg", "Docker build-arg.")
-}
-
-type arrayFlags []string
-
-func (i *arrayFlags) String() string {
-	return "my string representation"
-}
-
-func (i *arrayFlags) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
-
-var dockerBuildArg arrayFlags
 
 type BuildAndDeploy struct{}
 

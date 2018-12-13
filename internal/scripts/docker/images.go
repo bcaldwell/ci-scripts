@@ -1,33 +1,14 @@
 package CIScriptsDocker
 
 import (
-	"flag"
 	"fmt"
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
-	"github.com/bcaldwell/sshtun"
-	"os"
-	"path"
 	"strings"
 )
 
-func init() {
-	flag.Var(&dockerBuildArg, "build-arg", "Docker build-arg.")
-}
+type BuildAndPushImage struct{}
 
-func (i *arrayFlags) String() string {
-	return "my string representation"
-}
-
-func (i *arrayFlags) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
-
-var dockerBuildArg arrayFlags
-
-type BuildAndDeploy struct{}
-
-func (BuildAndDeploy) Run() error {
+func (BuildAndPushImage) Run() error {
 	folder, _ := c.ConfigFetch("docker.images.folder", ".")
 	dockerRepo := c.RequiredConfigFetch("docker.images.dockerRepo")
 
