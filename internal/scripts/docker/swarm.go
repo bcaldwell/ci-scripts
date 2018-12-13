@@ -3,6 +3,7 @@ package CIScriptsDocker
 import (
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 	"github.com/bcaldwell/sshtun"
+	"github.com/kevinburke/ssh_config"
 	"os"
 	"path"
 )
@@ -15,7 +16,7 @@ func (BuildAndDeploy) Run() error {
 	folder, _ := c.ConfigFetch("docker.swarm.folder", ".")
 	deployStack, _ := c.ConfigFetch("docker.swarm.stack", folder)
 	deployFile := c.RequiredConfigFetch("docker.swarm.deployfile")
-	masterIP := c.RequiredConfigFetch("docker.swarm.host")
+	host := c.RequiredConfigFetch("docker.swarm.host")
 
 	dockerSock := path.Join(os.TempDir(), "/docker.sock")
 
@@ -27,14 +28,27 @@ func (BuildAndDeploy) Run() error {
 		os.Remove(dockerSock)
 	}
 
-	sshTun := sshtun.NewUnix(dockerSock, masterIP, "/var/run/docker.sock")
+	f, _ := os.Open(path.Join(os.Getenv("HOME"), ".ssh", "config"))
+	sshConfig, _ := ssh_config.Decode(f)
+
+	sshTun := sshtun.NewUnix(dockerSock, host, "/var/run/docker.sock")
 
 	if user, ok := c.ConfigFetch("docker.swarm.user"); ok {
 		sshTun.SetUser(user)
+	} else {
+		user, _ = sshConfig.Get(host, "User")
+		if user != "" {
+			sshTun.SetUser(user)
+		}
 	}
 
 	if keyfile, ok := c.ConfigFetch("docker.swarm.keyfile"); ok {
 		sshTun.SetKeyFile(keyfile)
+	} else {
+		keyfile, _ = sshConfig.Get(host, "IdentityFile")
+		if keyfile != "" {
+			sshTun.SetKeyFile(keyfile)
+		}
 	}
 
 	go func() {
