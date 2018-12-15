@@ -3,23 +3,33 @@ package CIScriptsDocker
 import (
 	"fmt"
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
+	"os"
 	"strings"
 )
 
-type BuildAndPushImage struct{}
+type BuildAndPushImage struct {
+	Folder     string
+	DockerRepo string
+	DockerUser string
+	DockerTags []string
+}
 
-func (BuildAndPushImage) Run() error {
-	folder, _ := c.ConfigFetch("docker.images.folder", ".")
-	dockerRepo := c.RequiredConfigFetch("docker.images.dockerRepo")
+func (b *BuildAndPushImage) Run() error {
+	b.Folder, _ = c.ConfigFetch("docker.images.folder", ".")
+	b.DockerRepo = c.RequiredConfigFetch("docker.images.dockerRepo")
 
-	c.LogInfo("Build %s from folder %s", dockerRepo, folder)
+	c.LogInfo("Build %s from folder %s", b.DockerRepo, b.Folder)
 
-	dockerUser, _ := c.ConfigFetch("docker.user")
+	b.DockerUser, _ = c.ConfigFetch("docker.user")
 
-	gitSha, _ := c.CaptureCommand("git", "rev-parse", "HEAD")
-	dockerTag, _ := c.ConfigFetch("docker.tag", strings.TrimSpace(string(gitSha)))
+	dockerTagsString, _ := c.ConfigFetch("docker.tags", "_tags, _sha, latest")
 
-	dockerBuildCommand := []string{"docker", "build", "-t", dockerRepo, folder}
+	b.DockerTags = strings.Split(dockerTagsString, ",")
+	b.parseTags()
+
+	fmt.Println(b.DockerTags)
+
+	dockerBuildCommand := []string{"docker", "build", "-t", b.DockerRepo, b.Folder}
 
 	if args, ok := c.ConfigFetch("docker.image.build_args"); ok {
 		dockerBuildCommand = append(dockerBuildCommand, strings.Split(args, " ")...)
@@ -30,20 +40,42 @@ func (BuildAndPushImage) Run() error {
 		return err
 	}
 
-	dockerRepoWithTag := fmt.Sprintf("%s:%s", dockerRepo, dockerTag)
-	c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", dockerUser))
-	err = c.Command("docker", "tag", dockerRepo, dockerRepoWithTag)
-	if err != nil {
-		return err
+	if b.DockerUser != "" && os.Getenv("DOCKER_PASS") != "" {
+		c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", b.DockerUser))
 	}
-	err = c.Command("docker", "push", dockerRepo)
-	if err != nil {
-		return err
-	}
-	err = c.Command("docker", "push", dockerRepoWithTag)
-	if err != nil {
-		return err
+
+	for _, tag := range b.DockerTags {
+		dockerRepoWithTag := fmt.Sprintf("%s:%s", b.DockerRepo, tag)
+		err = c.Command("docker", "tag", b.DockerRepo, dockerRepoWithTag)
+		if err != nil {
+			return err
+		}
+		err = c.Command("docker", "push", dockerRepoWithTag)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
+}
+
+func (b *BuildAndPushImage) parseTags() {
+	tags := []string{}
+	for _, tag := range b.DockerTags {
+		switch strings.TrimSpace(tag) {
+		case "_tags":
+			tagList, _ := c.CaptureCommand("git", "tag", "-l", "--points-at", "HEAD")
+			for _, tag := range strings.Split(string(tagList), "\n") {
+				if tag != "" {
+					tags = append(tags, strings.TrimSpace(tag))
+				}
+			}
+		case "_sha":
+			tag, _ := c.CaptureCommand("git", "rev-parse", "HEAD")
+			tags = append(tags, strings.TrimSpace(string(tag)))
+		default:
+			tags = append(tags, strings.TrimSpace(tag))
+		}
+	}
+	b.DockerTags = tags
 }
