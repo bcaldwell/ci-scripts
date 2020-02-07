@@ -10,6 +10,7 @@ import (
 	CIScriptsGit "github.com/bcaldwell/ci-scripts/internal/scripts/git"
 	CIScriptsGithub "github.com/bcaldwell/ci-scripts/internal/scripts/github"
 	CIScriptsGo "github.com/bcaldwell/ci-scripts/internal/scripts/go"
+	CIScriptsKubernetes "github.com/bcaldwell/ci-scripts/internal/scripts/kubernetes"
 	CIScriptsRuby "github.com/bcaldwell/ci-scripts/internal/scripts/ruby"
 )
 
@@ -32,6 +33,8 @@ var scripts = map[string]script{
 
 	"github/release":           &CIScriptsGithub.Release{},
 	"github/release_checksums": &CIScriptsGithub.ReleaseChecksums{},
+
+	"kubernetes/deploy": &CIScriptsKubernetes.Deploy{},
 }
 
 func Execute() {

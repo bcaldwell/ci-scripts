@@ -2,7 +2,9 @@ module github.com/bcaldwell/ci-scripts
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/Shopify/ejson v1.2.1
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/dustin/gojson v0.0.0-20160307161227-2e71ec9dd5ad // indirect
 	github.com/fsnotify/fsnotify v1.4.7 // indirect
 	github.com/hashicorp/hcl v0.0.0-20171017181929-23c074d0eceb // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20180830205328-81db2a75821e

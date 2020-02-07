@@ -53,6 +53,19 @@ func Command(args ...string) error {
 	})
 }
 
+func RunCommand(cmd *exec.Cmd) error {
+	return TimedRun(cmd.Path+" "+strings.Join(cmd.Args, " "), func() error {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		err := cmd.Start()
+		if err != nil {
+			return err
+		}
+		err = cmd.Wait()
+		return err
+	})
+}
+
 func TimedRun(name string, function Run) error {
 	LogInfo(name)
 	start := time.Now()
