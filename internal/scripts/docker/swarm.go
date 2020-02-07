@@ -2,7 +2,7 @@ package CIScriptsDocker
 
 import (
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
-	"github.com/bcaldwell/sshtun"
+	"github.com/rgzr/sshtun"
 	"github.com/kevinburke/ssh_config"
 	"os"
 	"path"
