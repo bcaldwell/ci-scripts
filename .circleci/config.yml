@@ -6,7 +6,7 @@ jobs:
   release:
     docker:
       # specify the version
-      - image: circleci/golang:1.11
+      - image: circleci/golang:1.13
     environment:
       CI_SCRIPTS_CONFIG: ./.circleci/ci_scripts.yml
       GITHUB_RELEASE_TAG: latest
