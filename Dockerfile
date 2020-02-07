@@ -12,8 +12,8 @@ FROM docker:19
 ENV HELM_VERSION=3.0.3
 ENV KUBECTL_VERSION=1.17.0
 
-# install helm and kubectl
-RUN apk add --update --no-cache curl ca-certificates && \
+# install git, helm and kubectl
+RUN apk add --update --no-cache curl ca-certificates git && \
     curl -L https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz && \
     mv linux-amd64/helm /usr/bin/helm && \
     chmod +x /usr/bin/helm && \

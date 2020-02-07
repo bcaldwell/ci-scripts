@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -18,7 +19,7 @@ import (
 )
 
 const (
-	KUBECONFIG_PATH = "~/.kube/config"
+	defaultKubeconfigPath = "~/.kube/config"
 )
 
 type kubeNamespace struct {
@@ -28,12 +29,11 @@ type kubeNamespace struct {
 }
 
 type Deploy struct {
-	kubeconfigPath string
 }
 
 func (d *Deploy) Run() error {
 	// github repo to clone to access the config
-	// configRepo, _ := c.ConfigFetch("kubernetes.deploy.repo")
+	configRepo, _ := c.ConfigFetch("kubernetes.deploy.repo")
 	// path to the deployment config folder: relative to the github repo root or absolte if local
 	configFolder := c.RequiredConfigFetch("kubernetes.deploy.configFolder")
 	// helm chart configuration folder
@@ -46,18 +46,34 @@ func (d *Deploy) Run() error {
 	bastionHost, _ := c.ConfigFetch("kubernetes.deploy.bastion")
 	// namespace to deploy everything to
 	namespace := c.RequiredConfigFetch("kubernetes.deploy.namespace")
-	// env varaible to get kubeconfig from
+	// env variable to get kubeconfig from
 	kubeconfigEnv, _ := c.ConfigFetch("kubernetes.deploy.kubeconfigEnv", "KUBE_CONFIG")
 	// kube config path
-	kubeconfigPath, _ := c.ConfigFetch("kubernetes.deploy.kubeconfig", KUBECONFIG_PATH)
+	kubeconfigPath, _ := c.ConfigFetch("kubernetes.deploy.kubeconfig", defaultKubeconfigPath)
 	// helm chart path
 	helmChart := c.RequiredConfigFetch("kubernetes.deploy.helmChart")
 	// helm release name
 	releaseName := c.RequiredConfigFetch("kubernetes.deploy.releaseName")
 
-	predeployFolder = d.resolveFolderFromConfig(configFolder, predeployFolder)
-	secretsFolder = d.resolveFolderFromConfig(configFolder, secretsFolder)
-	helmValuesFolder = d.resolveFolderFromConfig(configFolder, helmValuesFolder)
+	// create temp dir to copy files to
+	tempConfigFolder, err := ioutil.TempDir("", "ci-scripts-kubernetes-deploy")
+	if err != nil {
+		return fmt.Errorf("failed to create temporary directory %w", err)
+	}
+	// clean up tempdir
+	defer os.RemoveAll(tempConfigFolder)
+
+	// clone repo if repo is provided
+	if configRepo != "" {
+		err = c.Command("git", "clone", configRepo, tempConfigFolder)
+		if err != nil {
+			return fmt.Errorf("failed to clone git repo %s: %w", configRepo, err)
+		}
+	}
+
+	predeployFolder = d.resolveFolderFromConfig(tempConfigFolder, configFolder, predeployFolder)
+	secretsFolder = d.resolveFolderFromConfig(tempConfigFolder, configFolder, secretsFolder)
+	helmValuesFolder = d.resolveFolderFromConfig(tempConfigFolder, configFolder, helmValuesFolder)
 
 	if bastionHost != "" {
 		c.LogInfo("Setting up bastion host tunnel")
@@ -200,7 +216,7 @@ func (*Deploy) createNamespace(namespace string) error {
 
 	c.LogInfo("creating namespace %s", namespace)
 
-	kubeApply := exec.Command("kubectl", "apply", "-f", "-")
+	kubeApply := exec.Command("kubectl", "apply", "--wait", "-f", "-")
 	kubeApply.Stdin = bytes.NewReader(manifest)
 
 	return c.RunCommand(kubeApply)
@@ -240,7 +256,7 @@ func (*Deploy) deploySecretsFolder(folder string) error {
 func (*Deploy) deployHelm(releaseName, helmchart, namespace, configFolder string) error {
 	c.LogInfo("Deploying helm chart %s with release %s into %s", helmchart, releaseName, namespace)
 
-	helmCmd := []string{"helm", "upgrade", "--install", "-n", namespace, releaseName, helmchart}
+	helmCmd := []string{"helm", "upgrade", "--wait", "--install", "-n", namespace, releaseName, helmchart}
 
 	if _, err := os.Stat(configFolder); err == nil {
 		files, err := c.RecursiveFilesInFolder(configFolder)
@@ -258,6 +274,6 @@ func (*Deploy) deployHelm(releaseName, helmchart, namespace, configFolder string
 	return c.Command(helmCmd...)
 }
 
-func (*Deploy) resolveFolderFromConfig(configFolder, configPath string) string {
-	return path.Join(configFolder, configPath)
+func (*Deploy) resolveFolderFromConfig(tempPath, configFolder, configPath string) string {
+	return path.Join(tempPath, configFolder, configPath)
 }
