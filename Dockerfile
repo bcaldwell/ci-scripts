@@ -1,3 +1,11 @@
+FROM golang:1.13 AS builder
+
+WORKDIR $GOPATH/src/github.com/bcaldwell/ci-scripts
+
+COPY . ./
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /ci-scripts .
+
+
 # Alpine linux with docker installed
 FROM docker:19
 
@@ -15,5 +23,7 @@ RUN apk add --update --no-cache curl ca-certificates && \
     chmod +x /usr/bin/kubectl && \
     apk del curl && \
     rm -f /var/cache/apk/*
+
+COPY --from=builder /ci-scripts /usr/bin/ci-scripts
 
 ENTRYPOINT [ "/bin/sh" ]
