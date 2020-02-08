@@ -13,7 +13,7 @@ ENV HELM_VERSION=3.0.3
 ENV KUBECTL_VERSION=1.17.0
 
 # install git, helm and kubectl
-RUN apk add --update --no-cache curl ca-certificates git && \
+RUN apk add --update --no-cache curl ca-certificates git bash && \
     curl -L https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz | tar xvz && \
     mv linux-amd64/helm /usr/bin/helm && \
     chmod +x /usr/bin/helm && \
@@ -26,4 +26,4 @@ RUN apk add --update --no-cache curl ca-certificates git && \
 
 COPY --from=builder /ci-scripts /usr/bin/ci-scripts
 
-ENTRYPOINT [ "/bin/sh" ]
+ENTRYPOINT [ "/bin/bash" ]
