@@ -25,19 +25,13 @@ jobs:
 
   release-docker:
     docker:
-      - image: docker:19
+      - image: benjamincaldwell/ci-scripts
 
     working_directory: /go/src/github.com/bcaldwell/ci-scripts
 
     steps:
       - checkout
       - setup_remote_docker
-      - run: apk add --no-cache git
-        # docker_layer_caching: true
-      # specify any bash command here prefixed with `run: `
-      - run:
-          name: Install ci-scripts
-          command: wget -q -O - https://raw.githubusercontent.com/bcaldwell/ci-scripts/master/scripts/install.sh | sh
 
       - run:
           name: Build and pushing docker image
