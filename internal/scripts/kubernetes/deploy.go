@@ -188,6 +188,8 @@ func (*Deploy) getKubeConfig(kubeconfigPath string, kubeconfigEnv string) (strin
 			return "", fmt.Errorf("Failed to decode base64 encode kube config %w", err)
 		}
 
+		os.MkdirAll(filepath.Dir(kubeconfigPath), 0644)
+
 		f, err := os.Create(kubeconfigPath)
 		if err != nil {
 			return "", fmt.Errorf("Failed to creating kube config from environemt %w", err)
