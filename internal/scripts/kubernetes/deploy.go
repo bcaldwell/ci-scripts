@@ -44,6 +44,8 @@ func (d *Deploy) Run() error {
 	predeployFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.predeploy", "predeploy")
 	// bastion host to port forward kubernetes api server from
 	bastionHost, _ := c.ConfigFetch("kubernetes.deploy.bastion")
+	//
+	remotePortforwardHost, _ := c.ConfigFetch("kubernetes.deploy.remotePortforwardHost", "localhost")
 	// namespace to deploy everything to
 	namespace := c.RequiredConfigFetch("kubernetes.deploy.namespace")
 	// env variable to get kubeconfig from
@@ -82,7 +84,7 @@ func (d *Deploy) Run() error {
 	if bastionHost != "" {
 		c.LogInfo("Setting up bastion host tunnel")
 
-		sshTun := d.setupPortForward(bastionHost, 6443, 6443)
+		sshTun := d.setupPortForward(bastionHost, 6443, remotePortforwardHost, 6443)
 		defer sshTun.Stop()
 	}
 
@@ -91,9 +93,9 @@ func (d *Deploy) Run() error {
 		return err
 	}
 
-	fmt.Println(kubeconfig)
-
 	os.Setenv("KUBECONFIG", kubeconfig)
+
+	os.Setenv("NAMESPACE", namespace)
 
 	err = d.createNamespace(namespace)
 	if err != nil {
@@ -122,13 +124,14 @@ func (d *Deploy) Run() error {
 	return nil
 }
 
-func (*Deploy) setupPortForward(host string, localPort, remotePort int) *sshtun.SSHTun {
+func (*Deploy) setupPortForward(host string, localPort int, remoteHost string, remotePort int) *sshtun.SSHTun {
 	f, _ := os.Open(path.Join(os.Getenv("HOME"), ".ssh", "config"))
 	sshConfig, _ := ssh_config.Decode(f)
 
 	sshTun := sshtun.New(localPort, host, remotePort)
+	sshTun.SetRemoteHost(remoteHost)
 
-	if user, ok := c.ConfigFetch("docker.kubernetes.bastionUser"); ok {
+	if user, ok := c.ConfigFetch("kubernetes.deploy.bastionUser"); ok {
 		sshTun.SetUser(user)
 	} else {
 		user, _ = sshConfig.Get(host, "User")
@@ -137,7 +140,7 @@ func (*Deploy) setupPortForward(host string, localPort, remotePort int) *sshtun.
 		}
 	}
 
-	if keyfile, ok := c.ConfigFetch("docker.kubernetes.bastionKeyfile"); ok {
+	if keyfile, ok := c.ConfigFetch("kubernetes.deploy.bastionKeyfile"); ok {
 		sshTun.SetKeyFile(keyfile)
 	} else {
 		keyfile, _ = sshConfig.Get(host, "IdentityFile")
@@ -226,21 +229,36 @@ func (*Deploy) createNamespace(namespace string) error {
 	return c.RunCommand(kubeApply)
 }
 
-func (*Deploy) kubectlDeployFolder(folder, namespace string) error {
+func (d *Deploy) kubectlDeployFolder(folder, namespace string) error {
 	if _, err := os.Stat(folder); err == nil {
 		c.LogInfo("Deploying folder %s", folder)
+
+		tempConfigFolder, err := d.createTempFolderAndCopy(folder, "ci-scripts-kubernetes-deploy-folder")
+		if err != nil {
+			return err
+		}
+		// clean up tempdir
+		defer os.RemoveAll(tempConfigFolder)
+
 		// -R for recursive
-		return c.Command("kubectl", "apply", "-R", "-f", folder)
+		return c.Command("kubectl", "apply", "-R", "-f", tempConfigFolder)
 	}
 
 	return nil
 }
 
-func (*Deploy) deploySecretsFolder(folder string) error {
+func (d *Deploy) deploySecretsFolder(folder string) error {
 	if _, err := os.Stat(folder); err == nil {
 		c.LogInfo("Deploying secrets folder %s", folder)
 
-		files, err := c.RecursiveFilesInFolder(folder)
+		tempConfigFolder, err := d.createTempFolderAndCopy(folder, "ci-scripts-kubernetes-secrets-folder")
+		if err != nil {
+			return err
+		}
+		// clean up tempdir
+		defer os.RemoveAll(tempConfigFolder)
+
+		files, err := c.RecursiveFilesInFolder(tempConfigFolder)
 
 		if err != nil {
 			return fmt.Errorf("failed to get files in secrets folder %s %w", folder, err)
@@ -257,13 +275,20 @@ func (*Deploy) deploySecretsFolder(folder string) error {
 	return nil
 }
 
-func (*Deploy) deployHelm(releaseName, helmchart, namespace, configFolder string) error {
+func (d *Deploy) deployHelm(releaseName, helmchart, namespace, configFolder string) error {
 	c.LogInfo("Deploying helm chart %s with release %s into %s", helmchart, releaseName, namespace)
 
 	helmCmd := []string{"helm", "upgrade", "--wait", "--install", "-n", namespace, releaseName, helmchart}
 
 	if _, err := os.Stat(configFolder); err == nil {
-		files, err := c.RecursiveFilesInFolder(configFolder)
+		tempConfigFolder, err := d.createTempFolderAndCopy(configFolder, "ci-scripts-kubernetes-helm-folder")
+		if err != nil {
+			return err
+		}
+		// clean up tempdir
+		defer os.RemoveAll(tempConfigFolder)
+
+		files, err := c.RecursiveFilesInFolder(tempConfigFolder)
 
 		if err != nil {
 			return fmt.Errorf("failed to get files in helm config folder %s %w", configFolder, err)
@@ -295,4 +320,18 @@ func (*Deploy) resolveFolderFromConfig(tempPath, configFolder, configPath string
 	}
 
 	return ""
+}
+
+func (*Deploy) createTempFolderAndCopy(folder, tempFolderPrefix string) (string, error) {
+	// create temp dir to copy files to
+	tempConfigFolder, err := ioutil.TempDir("", tempFolderPrefix)
+	if err != nil {
+		return "", fmt.Errorf("failed to create temporary directory %w", err)
+	}
+
+	err = c.CopyAndExpandFolder(folder, tempConfigFolder)
+	if err != nil {
+		return "", fmt.Errorf("failed to expand env in %s %w", folder, err)
+	}
+	return tempConfigFolder, nil
 }
