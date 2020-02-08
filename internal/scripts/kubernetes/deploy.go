@@ -75,6 +75,10 @@ func (d *Deploy) Run() error {
 	secretsFolder = d.resolveFolderFromConfig(tempConfigFolder, configFolder, secretsFolder)
 	helmValuesFolder = d.resolveFolderFromConfig(tempConfigFolder, configFolder, helmValuesFolder)
 
+	c.LogInfo("Using predeploy folder %s", predeployFolder)
+	c.LogInfo("Using secrets folder %s", secretsFolder)
+	c.LogInfo("Using helm values folder %s", helmValuesFolder)
+
 	if bastionHost != "" {
 		c.LogInfo("Setting up bastion host tunnel")
 
@@ -275,5 +279,20 @@ func (*Deploy) deployHelm(releaseName, helmchart, namespace, configFolder string
 }
 
 func (*Deploy) resolveFolderFromConfig(tempPath, configFolder, configPath string) string {
-	return path.Join(tempPath, configFolder, configPath)
+	folderPath := path.Join(tempPath, configFolder, configPath)
+	if p, err := os.Stat(folderPath); err == nil && p.IsDir() {
+		return folderPath
+	}
+
+	folderPath = path.Join(configFolder, configPath)
+	if p, err := os.Stat(folderPath); err == nil && p.IsDir() {
+		return folderPath
+	}
+
+	folderPath = configPath
+	if p, err := os.Stat(folderPath); err == nil && p.IsDir() {
+		return folderPath
+	}
+
+	return ""
 }
