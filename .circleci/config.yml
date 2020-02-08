@@ -32,6 +32,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: apk add --no-cache git
         # docker_layer_caching: true
       # specify any bash command here prefixed with `run: `
       - run:
