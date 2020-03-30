@@ -92,12 +92,13 @@ func CopyAndExpandFolder(srcFolder, destFolder string) error {
 
 			// expand env but don't change the value if the env variable doesn't exist
 			expandedSrc := os.Expand(string(s), func(s string) string {
-				if expandedVal, ok := os.LookupEnv(s); !ok {
-					return fmt.Sprintf("${%s}", s)
-				} else {
-					return expandedVal
-				}
+				var expandedVal string
+				var ok bool
 
+				if expandedVal, ok = os.LookupEnv(s); !ok {
+					return fmt.Sprintf("${%s}", s)
+				}
+				return expandedVal
 			})
 
 			_, err = io.Copy(f, strings.NewReader(expandedSrc))

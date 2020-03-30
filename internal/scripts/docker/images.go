@@ -2,9 +2,10 @@ package CIScriptsDocker
 
 import (
 	"fmt"
-	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 	"os"
 	"strings"
+
+	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 )
 
 type BuildAndPushImage struct {

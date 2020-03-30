@@ -8,12 +8,20 @@ type Bundler struct{}
 
 func (b *Bundler) Run() error {
 	if !c.CheckBinary("bundler") {
-		c.Command("gem", "install", "bundler", "--no-ri", "--no-rdoc")
+		err := c.Command("gem", "install", "bundler", "--no-ri", "--no-rdoc")
+		if err != nil {
+			return err
+		}
 	}
+
 	installPath, _ := c.ConfigFetch("ruby.bundler.install_path", "vendor")
 
 	if !c.TestCommand("bundler", "check") {
-		c.Command("bundler", "install", "--path", installPath)
+		err = c.Command("bundler", "install", "--path", installPath)
+		if err != nil {
+			return err
+		}
 	}
+
 	return nil
 }

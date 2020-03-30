@@ -1,13 +1,14 @@
 package CIScriptsDocker
 
 import (
-	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
-	"github.com/rgzr/sshtun"
-	"github.com/kevinburke/ssh_config"
 	"os"
 	"path"
 	"path/filepath"
 	"strings"
+
+	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
+	"github.com/kevinburke/ssh_config"
+	"github.com/rgzr/sshtun"
 )
 
 // docker/build_and_deploy folder --copy-dockerfile-to-root --build-arg (arg passed to docker build)

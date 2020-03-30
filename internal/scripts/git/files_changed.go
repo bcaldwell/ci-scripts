@@ -2,7 +2,6 @@ package CIScriptsGit
 
 import (
 	"errors"
-	"os"
 	"strings"
 
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
@@ -22,10 +21,12 @@ func (b *FilesChanged) Run() error {
 	if err != nil {
 		return err
 	}
+
 	filesChanged := strings.Split(string(result), "\n")
 
 	for _, pattern := range changePatterns {
 		pattern = strings.TrimSpace(pattern)
+
 		for _, file := range filesChanged {
 			matched := strings.HasPrefix(file, pattern)
 			if matched {
@@ -34,6 +35,5 @@ func (b *FilesChanged) Run() error {
 		}
 	}
 
-	os.Exit(1)
 	return errors.New("no match")
 }

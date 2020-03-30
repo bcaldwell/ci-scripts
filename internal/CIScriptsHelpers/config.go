@@ -6,13 +6,16 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/spf13/viper"
 	"regexp"
+
+	"github.com/spf13/viper"
 )
 
 func init() {
 	var configFile string
+
 	var ok bool
+
 	if configFile, ok = os.LookupEnv("CI_SCRIPTS_CONFIG"); !ok {
 		configFile = "./.ci_scripts"
 	}
@@ -66,6 +69,7 @@ func RequiredConfigFetch(key string) (value string) {
 	} else {
 		return s
 	}
+
 	return ""
 }
 
@@ -80,6 +84,7 @@ func ParseCLIArguments() {
 			if len(match) < 1 {
 				LogError("Failed to parse flag with regex --?([^=]+)=?(.+): ", arg)
 			}
+
 			flagName = strings.Replace(match[1], "-", ".", -1)
 
 			if len(match) == 3 && match[2] != "" {
