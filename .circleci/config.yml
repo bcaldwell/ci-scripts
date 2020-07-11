@@ -19,7 +19,7 @@ jobs:
       - checkout
 
       # specify any bash command here prefixed with `run: `
-      - run: go install cmd/ciscripts/ci-scripts.go
+      - run: go install ./cmd/ciscripts/ci-scripts.go
       - run: ci-scripts go/build
       - run: ci-scripts github/release
 
@@ -42,4 +42,5 @@ workflows:
   release:
     jobs:
       - release
-      - release-docker
+      - release-docker:
+          context: kubernetes
