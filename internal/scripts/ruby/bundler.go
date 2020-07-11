@@ -17,7 +17,7 @@ func (b *Bundler) Run() error {
 	installPath, _ := c.ConfigFetch("ruby.bundler.install_path", "vendor")
 
 	if !c.TestCommand("bundler", "check") {
-		err = c.Command("bundler", "install", "--path", installPath)
+		err := c.Command("bundler", "install", "--path", installPath)
 		if err != nil {
 			return err
 		}

@@ -1,4 +1,4 @@
-package CIScripts
+package main
 
 import (
 	"fmt"
@@ -13,6 +13,10 @@ import (
 	CIScriptsKubernetes "github.com/bcaldwell/ci-scripts/internal/scripts/kubernetes"
 	CIScriptsRuby "github.com/bcaldwell/ci-scripts/internal/scripts/ruby"
 )
+
+func main() {
+	Execute()
+}
 
 type script interface {
 	Run() error

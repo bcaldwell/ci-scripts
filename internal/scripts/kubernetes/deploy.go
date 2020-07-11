@@ -10,16 +10,13 @@ import (
 	"os/exec"
 	"path"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 	"github.com/bcaldwell/ci-scripts/pkg/ejsonsecret"
 	"github.com/kevinburke/ssh_config"
 	"github.com/rgzr/sshtun"
-)
-
-const (
-	defaultKubeconfigPath = "~/.kube/config"
 )
 
 type kubeNamespace struct {
@@ -33,9 +30,9 @@ type Deploy struct {
 
 func (d *Deploy) Run() error {
 	// github repo to clone to access the config
-	configRepo, _ := c.ConfigFetch("kubernetes.deploy.repo")
-	// path to the deployment config folder: relative to the github repo root or absolte if local
-	configFolder := c.RequiredConfigFetch("kubernetes.deploy.configFolder")
+	configRepo, _ := c.ConfigFetch("kubernetes.deploy.config.repo")
+	// path to the deployment config folder: relative to the github repo root or absolute if local
+	configFolder := c.RequiredConfigFetch("kubernetes.deploy.config.folder")
 	// helm chart configuration folder
 	helmValuesFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.helmvalues", "helmvalues")
 	// folder with ejson secrets to deploy
@@ -43,7 +40,7 @@ func (d *Deploy) Run() error {
 	// folder with pre deployment files to deploy
 	predeployFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.predeploy", "predeploy")
 	// bastion host to port forward kubernetes api server from
-	bastionHost, _ := c.ConfigFetch("kubernetes.deploy.bastion")
+	bastionHost, _ := c.ConfigFetch("kubernetes.deploy.bastion.host")
 	//
 	remotePortforwardHost, _ := c.ConfigFetch("kubernetes.deploy.remotePortforwardHost", "localhost")
 	// namespace to deploy everything to
@@ -51,7 +48,7 @@ func (d *Deploy) Run() error {
 	// env variable to get kubeconfig from
 	kubeconfigEnv, _ := c.ConfigFetch("kubernetes.deploy.kubeconfigEnv", "KUBE_CONFIG")
 	// kube config path
-	kubeconfigPath, _ := c.ConfigFetch("kubernetes.deploy.kubeconfig", defaultKubeconfigPath)
+	kubeconfigPath, _ := c.ConfigFetch("kubernetes.deploy.kubeconfig", "~/.kube/config")
 	// helm chart path
 	helmChart := c.RequiredConfigFetch("kubernetes.deploy.helmChart")
 	// helm release name
@@ -85,7 +82,9 @@ func (d *Deploy) Run() error {
 		c.LogInfo("Setting up bastion host tunnel")
 
 		sshTun := d.setupPortForward(bastionHost, 6443, remotePortforwardHost, 6443)
-		defer sshTun.Stop()
+		if sshTun != nil {
+			defer sshTun.Stop()
+		}
 	}
 
 	kubeconfig, err := d.getKubeConfig(kubeconfigPath, kubeconfigEnv)
@@ -125,13 +124,20 @@ func (d *Deploy) Run() error {
 }
 
 func (*Deploy) setupPortForward(host string, localPort int, remoteHost string, remotePort int) *sshtun.SSHTun {
+	enabled, _ := c.ConfigFetch("kubernetes.deploy.bastion.enabled", "false")
+	if e, err := strconv.ParseBool(enabled); err != nil || !e {
+		c.LogInfo("bastion ssh connection disabled")
+
+		return nil
+	}
+
 	f, _ := os.Open(path.Join(os.Getenv("HOME"), ".ssh", "config"))
 	sshConfig, _ := ssh_config.Decode(f)
 
 	sshTun := sshtun.New(localPort, host, remotePort)
 	sshTun.SetRemoteHost(remoteHost)
 
-	if user, ok := c.ConfigFetch("kubernetes.deploy.bastionUser"); ok {
+	if user, ok := c.ConfigFetch("kubernetes.deploy.bastion.user"); ok {
 		sshTun.SetUser(user)
 	} else {
 		user, _ = sshConfig.Get(host, "User")
@@ -140,7 +146,7 @@ func (*Deploy) setupPortForward(host string, localPort int, remoteHost string, r
 		}
 	}
 
-	if keyfile, ok := c.ConfigFetch("kubernetes.deploy.bastionKeyfile"); ok {
+	if keyfile, ok := c.ConfigFetch("kubernetes.deploy.bastion.keyfile"); ok {
 		sshTun.SetKeyFile(keyfile)
 	} else {
 		keyfile, _ = sshConfig.Get(host, "IdentityFile")
