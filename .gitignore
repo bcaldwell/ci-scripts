@@ -54,3 +54,4 @@ build-iPhoneSimulator/
 dist/release/**/*
 
 .ci-build
+ci-scripts
