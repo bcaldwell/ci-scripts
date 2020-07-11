@@ -25,7 +25,7 @@ jobs:
 
   release-docker:
     docker:
-      - image: docker:19
+      - image: benjamincaldwell/ci-scripts
 
     working_directory: /go/src/github.com/bcaldwell/ci-scripts
 
@@ -33,7 +33,6 @@ jobs:
       - checkout
       - setup_remote_docker
 
-      - run: go install cmd/ciscripts/ci-scripts.go
       - run:
           name: Build and pushing docker image
           command: ci-scripts docker/build_and_push_image --docker-images-dockerRepo benjamincaldwell/ci-scripts
