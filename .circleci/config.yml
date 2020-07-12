@@ -42,5 +42,4 @@ workflows:
   release:
     jobs:
       - release
-      - release-docker:
-          context: kubernetes
+      - release-docker

@@ -39,6 +39,8 @@ func (d *Deploy) Run() error {
 	secretsFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.secrets", "secrets")
 	// folder with pre deployment files to deploy
 	predeployFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.predeploy", "predeploy")
+	// folder with pre deployment files to deploy
+	postdeployFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.postdeploy", "postdeploy")
 	// bastion host to port forward kubernetes api server from
 	bastionHost, _ := c.ConfigFetch("kubernetes.deploy.bastion.host")
 	//
@@ -118,6 +120,13 @@ func (d *Deploy) Run() error {
 	err = d.deployHelm(releaseName, helmChart, namespace, helmValuesFolder)
 	if err != nil {
 		return fmt.Errorf("failed to deploy helm chart %s %w", helmChart, err)
+	}
+
+	if postdeployFolder != "" {
+		err = d.kubectlDeployFolder(postdeployFolder, namespace)
+		if err != nil {
+			return fmt.Errorf("failed to deploy predeploy folder %s %w", postdeployFolder, err)
+		}
 	}
 
 	return nil
