@@ -353,5 +353,6 @@ func (*Deploy) createTempFolderAndCopy(folder, tempFolderPrefix string) (string,
 	if err != nil {
 		return "", fmt.Errorf("failed to expand env in %s %w", folder, err)
 	}
+
 	return tempConfigFolder, nil
 }
