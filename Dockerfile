@@ -1,4 +1,4 @@
-FROM golang:1.14 AS builder
+FROM golang:1.15 AS builder
 
 WORKDIR $GOPATH/src/github.com/bcaldwell/ci-scripts
 
@@ -7,10 +7,10 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /ci-scripts ./c
 
 
 # Alpine linux with docker installed
-FROM docker:19
+FROM docker:20
 
-ENV HELM_VERSION=3.0.3
-ENV KUBECTL_VERSION=1.17.0
+ENV HELM_VERSION=3.4.1
+ENV KUBECTL_VERSION=1.19.3
 
 # install git, helm and kubectl
 RUN apk add --update --no-cache curl ca-certificates git bash && \
