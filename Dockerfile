@@ -7,7 +7,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /ci-scripts ./c
 
 
 # Alpine linux with docker installed
-FROM docker:20
+FROM docker:19
 
 ENV HELM_VERSION=3.4.1
 ENV KUBECTL_VERSION=1.19.3
