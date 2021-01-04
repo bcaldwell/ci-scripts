@@ -41,11 +41,6 @@ func (d *Deploy) Run() error {
 	predeployFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.predeploy", "predeploy")
 	// folder with pre deployment files to deploy
 	postdeployFolder, _ := c.ConfigFetch("kubernetes.deploy.folder.postdeploy", "postdeploy")
-	// bastion host to port forward kubernetes api server from
-	bastionHost, _ := c.ConfigFetch("kubernetes.deploy.bastion.host")
-	//
-	remotePortforwardHost, _ := c.ConfigFetch("kubernetes.deploy.remotePortforwardHost", "localhost")
-	// namespace to deploy everything to
 	namespace := c.RequiredConfigFetch("kubernetes.deploy.namespace")
 	// env variable to get kubeconfig from
 	kubeconfigEnv, _ := c.ConfigFetch("kubernetes.deploy.kubeconfigEnv", "KUBE_CONFIG")
@@ -55,6 +50,11 @@ func (d *Deploy) Run() error {
 	helmChart := c.RequiredConfigFetch("kubernetes.deploy.helmChart")
 	// helm release name
 	releaseName := c.RequiredConfigFetch("kubernetes.deploy.releaseName")
+	// bastion host to port forward kubernetes api server from
+	bastionHost, _ := c.ConfigFetch("kubernetes.deploy.bastion.host")
+	//
+	remotePortforwardHost, _ := c.ConfigFetch("kubernetes.deploy.remotePortforwardHost", "localhost")
+	// namespace to deploy everything to
 
 	// create temp dir to copy files to
 	tempConfigFolder, err := ioutil.TempDir("", "ci-scripts-kubernetes-deploy")
