@@ -30,31 +30,30 @@ func (b *BuildAndPushImage) Run() error {
 
 	fmt.Println(b.DockerTags)
 
-	dockerBuildCommand := []string{"docker", "build", "-t", b.DockerRepo, b.Folder}
+	if b.DockerUser != "" && os.Getenv("DOCKER_PASS") != "" {
+		c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", b.DockerUser))
+	}
+
+	err := c.Command("docker", "buildx", "create", "--use")
+	if err != nil {
+		return err
+	}
+
+	// docker buildx build . --platform=linux/arm64,linux/amd64 --tag my/image:0.1 --tag my/image:latest --pull --push --no-cache
+	dockerBuildCommand := []string{"docker", "buildx", "build", b.Folder, "--platform", "linux/amd64,linux/arm64,linux/arm/v7", "--push"}
 
 	if args, ok := c.ConfigFetch("docker.image.build_args"); ok {
 		dockerBuildCommand = append(dockerBuildCommand, strings.Split(args, " ")...)
 	}
 
-	err := c.Command(dockerBuildCommand...)
-	if err != nil {
-		return err
-	}
-
-	if b.DockerUser != "" && os.Getenv("DOCKER_PASS") != "" {
-		c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", b.DockerUser))
-	}
-
 	for _, tag := range b.DockerTags {
 		dockerRepoWithTag := fmt.Sprintf("%s:%s", b.DockerRepo, tag)
-		err = c.Command("docker", "tag", b.DockerRepo, dockerRepoWithTag)
-		if err != nil {
-			return err
-		}
-		err = c.Command("docker", "push", dockerRepoWithTag)
-		if err != nil {
-			return err
-		}
+		dockerBuildCommand = append(dockerBuildCommand, "--tag", dockerRepoWithTag)
+	}
+
+	err = c.Command(dockerBuildCommand...)
+	if err != nil {
+		return err
 	}
 
 	return nil
