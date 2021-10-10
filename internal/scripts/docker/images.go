@@ -34,7 +34,14 @@ func (b *BuildAndPushImage) Run() error {
 		c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", b.DockerUser))
 	}
 
-	err := c.Command("docker", "buildx", "create", "--use")
+	dockerContextName := b.DockerRepo + "-" + b.Folder
+
+	err := c.Command("docker", "buildx", "create", dockerContextName)
+	if err != nil {
+		return err
+	}
+
+	err = c.Command("docker", "buildx", "create", dockerContextName, "--use")
 	if err != nil {
 		return err
 	}
