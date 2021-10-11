@@ -4,9 +4,8 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
-
 	"regexp"
+	"strings"
 
 	"github.com/spf13/viper"
 )
@@ -46,6 +45,11 @@ func RequiredConfigKey(key string) {
 	if s := viper.GetString(key); s == "" {
 		PrettyExit(1, "Required environment variable %s not set", key)
 	}
+}
+
+func ConfigFetchWithDefault(key, defaultValue string) (value string) {
+	val, _ := ConfigFetch(key, defaultValue)
+	return val
 }
 
 // EnvFetch fetchs an environment variables. Sets the value to the default value if it does not exist.

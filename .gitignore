@@ -55,3 +55,4 @@ dist/release/**/*
 
 .ci-build
 ci-scripts
+.DS_Store

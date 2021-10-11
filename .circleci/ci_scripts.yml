@@ -1,6 +1,6 @@
 go:
   build:
-    go_build_args: -output .ci-build/{{.OS}}_{{.Arch}} -arch amd64 -os linux -os darwin ./cmd/ciscripts
+    go_build_args: -output .ci-build/{{.OS}}_{{.Arch}} -osarch=linux/amd64 -osarch=linux/arm64 -osarch=darwin/amd64 ./cmd/ciscripts
 
 github:
   release:

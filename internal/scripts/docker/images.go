@@ -34,9 +34,9 @@ func (b *BuildAndPushImage) Run() error {
 		c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", b.DockerUser))
 	}
 
-	dockerContextName := b.DockerRepo + "-" + b.Folder
+	dockerContextName := strings.Replace(b.DockerRepo, "/", "-", -1)
 
-	err := c.Command("docker", "buildx", "create", dockerContextName)
+	err := c.Command("docker", "context", "create", dockerContextName)
 	if err != nil {
 		return err
 	}
@@ -46,8 +46,13 @@ func (b *BuildAndPushImage) Run() error {
 		return err
 	}
 
+	err = c.Command("docker", "run", "--privileged", "--rm", "tonistiigi/binfmt", "--install", "arm64,arm")
+	if err != nil {
+		return err
+	}
+
 	// docker buildx build . --platform=linux/arm64,linux/amd64 --tag my/image:0.1 --tag my/image:latest --pull --push --no-cache
-	dockerBuildCommand := []string{"docker", "buildx", "build", b.Folder, "--platform", "linux/amd64,linux/arm64,linux/arm/v7", "--push"}
+	dockerBuildCommand := []string{"docker", "buildx", "build", b.Folder, "--platform", c.ConfigFetchWithDefault("docker.image.platform", "linux/amd64,linux/arm64,linux/arm/v7"), "--push"}
 
 	if args, ok := c.ConfigFetch("docker.image.build_args"); ok {
 		dockerBuildCommand = append(dockerBuildCommand, strings.Split(args, " ")...)
