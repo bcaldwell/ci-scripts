@@ -3,7 +3,7 @@ FROM golang:1.17 AS builder
 WORKDIR $GOPATH/src/github.com/bcaldwell/ci-scripts
 
 COPY . ./
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o /ci-scripts ./cmd/ciscripts/ci-scripts.go
+RUN go build -o /ci-scripts ./cmd/ciscripts/ci-scripts.go
 
 
 # Alpine linux with docker installed

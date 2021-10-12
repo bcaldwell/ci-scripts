@@ -52,7 +52,7 @@ func (b *BuildAndPushImage) Run() error {
 	}
 
 	// docker buildx build . --platform=linux/arm64,linux/amd64 --tag my/image:0.1 --tag my/image:latest --pull --push --no-cache
-	dockerBuildCommand := []string{"docker", "buildx", "build", b.Folder, "--platform", c.ConfigFetchWithDefault("docker.image.platform", "linux/amd64,linux/arm64,linux/arm/v7"), "--push"}
+	dockerBuildCommand := []string{"docker", "buildx", "build", b.Folder, "--progress", "plain", "--platform", c.ConfigFetchWithDefault("docker.image.platform", "linux/amd64,linux/arm64"), "--push"}
 
 	if args, ok := c.ConfigFetch("docker.image.build_args"); ok {
 		dockerBuildCommand = append(dockerBuildCommand, strings.Split(args, " ")...)
