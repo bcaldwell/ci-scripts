@@ -73,7 +73,7 @@ func (b *CombineAndPushImage) Run() error {
 	image := fmt.Sprintf("%s/%s", b.DockerUser, b.DockerRepo)
 	dockerManifestCommand := []string{"docker", "manifest", "create", image}
 	for _, tag := range b.AmendTags {
-		dockerManifestCommand = append(dockerManifestCommand, fmt.Sprintf("%s:%s", image, tag))
+		dockerManifestCommand = append(dockerManifestCommand, "--amend", fmt.Sprintf("%s:%s", image, tag))
 	}
 
 	err := c.Command(dockerManifestCommand...)
