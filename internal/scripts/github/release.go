@@ -27,7 +27,7 @@ func (b *Release) Run() error {
 	}
 
 	if !c.CheckBinary("ghr") {
-		c.Command("go", "get", "-u", "github.com/tcnksm/ghr")
+    c.Command("bash", "-c", "cd / && go install github.com/tcnksm/ghr@latest")
 	}
 
 	b.command = []string{"ghr"}
