@@ -1,13 +1,13 @@
-FROM golang:1.20 AS builder
+FROM golang:1.20.0-alpine3.17 AS builder
 
-WORKDIR $GOPATH/src/github.com/bcaldwell/ci-scripts
+WORKDIR CGO_ENABLED=0 $GOPATH/src/github.com/bcaldwell/ci-scripts
 
 COPY . ./
 RUN go build -o /ci-scripts ./cmd/ciscripts/ci-scripts.go
 
 
 # Alpine linux with docker installed
-FROM docker:23
+FROM docker:23.0.0-alpine3.17
 COPY --from=docker/buildx-bin /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 
 ENV HELM_VERSION=3.7.0
