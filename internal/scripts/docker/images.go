@@ -8,32 +8,27 @@ import (
 	c "github.com/bcaldwell/ci-scripts/internal/CIScriptsHelpers"
 )
 
-type BuildAndPushImage struct {
-	Folder     string
+type DockerBase struct {
 	DockerRepo string
 	DockerUser string
 	DockerTags []string
 }
 
+type BuildAndPushImage struct {
+	*DockerBase
+	Folder string
+}
+
+type CombineAndPushImage struct {
+	*DockerBase
+	AmendTags []string
+}
+
 func (b *BuildAndPushImage) Run() error {
 	b.Folder, _ = c.ConfigFetch("docker.images.folder", ".")
-	b.DockerRepo = c.RequiredConfigFetch("docker.images.dockerRepo")
+	b.DockerBase.setup()
 
 	c.LogInfo("Build %s from folder %s", b.DockerRepo, b.Folder)
-
-	b.DockerUser, _ = c.ConfigFetch("docker.user")
-
-	dockerTagsString, _ := c.ConfigFetch("docker.tags", "_tags, _sha, latest")
-
-	b.DockerTags = strings.Split(dockerTagsString, ",")
-	b.parseTags()
-
-	fmt.Println(b.DockerTags)
-
-	if b.DockerUser != "" && os.Getenv("DOCKER_PASS") != "" {
-		c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", b.DockerUser))
-	}
-
 	dockerContextName := strings.Replace(b.DockerRepo, "/", "-", -1)
 
 	err := c.Command("docker", "context", "create", dockerContextName)
@@ -71,7 +66,51 @@ func (b *BuildAndPushImage) Run() error {
 	return nil
 }
 
-func (b *BuildAndPushImage) parseTags() {
+func (b *CombineAndPushImage) Run() error {
+	b.AmendTags = strings.Split(c.RequiredConfigFetch("docker.combine.amend_tags"), ",")
+	b.DockerBase.setup()
+
+	image := fmt.Sprintf("%s/%s", b.DockerUser, b.DockerRepo)
+	dockerManifestCommand := []string{"docker", "manifest", "create", image}
+	for _, tag := range b.AmendTags {
+		dockerManifestCommand = append(dockerManifestCommand, fmt.Sprintf("%s:%s", image, tag))
+	}
+
+	err := c.Command(dockerManifestCommand...)
+	if err != nil {
+		return err
+	}
+
+	for _, tag := range b.DockerTags {
+		taggedImage := fmt.Sprintf("%s:%s", image, tag)
+		err = c.Command("docker", "tag", image, taggedImage)
+		if err != nil {
+			return err
+		}
+		err = c.Command("docker", "push", taggedImage)
+	}
+
+	return nil
+}
+
+func (b *DockerBase) setup() {
+	b.DockerRepo = c.RequiredConfigFetch("docker.images.dockerRepo")
+
+	b.DockerUser, _ = c.ConfigFetch("docker.user")
+
+	dockerTagsString, _ := c.ConfigFetch("docker.tags", "_tags, _sha, latest")
+
+	b.DockerTags = strings.Split(dockerTagsString, ",")
+	b.parseTags()
+
+	fmt.Println(b.DockerTags)
+
+	if b.DockerUser != "" && os.Getenv("DOCKER_PASS") != "" {
+		c.Command("sh", "-c", fmt.Sprintf("docker login -u %s -p $DOCKER_PASS", b.DockerUser))
+	}
+}
+
+func (b *DockerBase) parseTags() {
 	tags := []string{}
 	for _, tag := range b.DockerTags {
 		switch strings.TrimSpace(tag) {

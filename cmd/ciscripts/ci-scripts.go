@@ -32,8 +32,9 @@ var scripts = map[string]script{
 
 	"git/files_changed": &CIScriptsGit.FilesChanged{},
 
-	"docker/deploy":               &CIScriptsDocker.BuildAndDeploy{},
-	"docker/build_and_push_image": &CIScriptsDocker.BuildAndPushImage{},
+	"docker/deploy":                 &CIScriptsDocker.BuildAndDeploy{},
+	"docker/build_and_push_image":   &CIScriptsDocker.BuildAndPushImage{},
+	"docker/combine_and_push_image": &CIScriptsDocker.CombineAndPushImage{},
 
 	"github/release":           &CIScriptsGithub.Release{},
 	"github/release_checksums": &CIScriptsGithub.ReleaseChecksums{},
