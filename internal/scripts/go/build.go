@@ -14,7 +14,7 @@ type Build struct {
 func (b *Build) Run() error {
 
 	if !c.CheckBinary("gox") {
-		c.Command("go", "install", "github.com/mitchellh/gox")
+		c.Command("bash", "-c", "cd / && go install github.com/mitchellh/gox@latest")
 	}
 
 	b.buildCommand = []string{"gox"}
