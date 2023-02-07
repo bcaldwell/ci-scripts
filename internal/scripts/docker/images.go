@@ -15,12 +15,12 @@ type DockerBase struct {
 }
 
 type BuildAndPushImage struct {
-	*DockerBase
+	DockerBase
 	Folder string
 }
 
 type CombineAndPushImage struct {
-	*DockerBase
+	DockerBase
 	AmendTags []string
 }
 
