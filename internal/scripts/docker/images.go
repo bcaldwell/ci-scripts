@@ -82,11 +82,11 @@ func (b *CombineAndPushImage) Run() error {
 
 	for _, tag := range b.DockerTags {
 		taggedImage := fmt.Sprintf("%s:%s", b.DockerRepo, tag)
-		err = c.Command("docker", "tag", b.DockerRepo, taggedImage)
+		err = c.Command("docker", "manifest", "tag", b.DockerRepo, taggedImage)
 		if err != nil {
 			return err
 		}
-		err = c.Command("docker", "push", taggedImage)
+		err = c.Command("docker", "manifest", "push", taggedImage)
 	}
 
 	return nil
