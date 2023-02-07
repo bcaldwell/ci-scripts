@@ -74,24 +74,21 @@ func (b *CombineAndPushImage) Run() error {
 	for _, tag := range b.DockerTags {
 		taggedImage := fmt.Sprintf("%s:%s", b.DockerRepo, tag)
 		dockerManifestCommand = append(dockerManifestCommand, taggedImage)
-	}
-	for _, tag := range b.AmendTags {
-		dockerManifestCommand = append(dockerManifestCommand, "--amend", fmt.Sprintf("%s:%s", b.DockerRepo, tag))
+		for _, tag := range b.AmendTags {
+			dockerManifestCommand = append(dockerManifestCommand, "--amend", fmt.Sprintf("%s:%s", b.DockerRepo, tag))
+		}
+
+		err := c.Command(dockerManifestCommand...)
+		if err != nil {
+			return err
+		}
+		err = c.Command("docker", "manifest", "push", taggedImage)
+		if err != nil {
+			return err
+		}
 	}
 
-	err := c.Command(dockerManifestCommand...)
-	if err != nil {
-		return err
-	}
-
-	pushCommand := []string{"docker", "manifest", "push"}
-	for _, tag := range b.DockerTags {
-		taggedImage := fmt.Sprintf("%s:%s", b.DockerRepo, tag)
-		pushCommand = append(pushCommand, taggedImage)
-	}
-	
-	err = c.Command("docker", "manifest", "push", taggedImage)
-	return err
+	return nil
 }
 
 func (b *DockerBase) setup() {
