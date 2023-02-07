@@ -7,7 +7,7 @@ RUN go build -o /ci-scripts ./cmd/ciscripts/ci-scripts.go
 
 
 # Alpine linux with docker installed
-FROM docker:20
+FROM docker:23
 COPY --from=docker/buildx-bin /buildx /usr/libexec/docker/cli-plugins/docker-buildx
 
 ENV HELM_VERSION=3.7.0
