@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -175,7 +176,7 @@ func (*Deploy) setupPortForward(host string, localPort int, remoteHost string, r
 	}
 
 	go func() {
-		err := sshTun.Start()
+		err := sshTun.Start(context.Background())
 		if err != nil {
 			c.LogError(err.Error())
 		}

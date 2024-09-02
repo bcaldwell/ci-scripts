@@ -1,6 +1,7 @@
 package CIScriptsDocker
 
 import (
+	"context"
 	"os"
 	"path"
 	"path/filepath"
@@ -64,7 +65,7 @@ func (BuildAndDeploy) Run() error {
 	}
 
 	go func() {
-		err := sshTun.Start()
+		err := sshTun.Start(context.Background())
 		if err != nil {
 			c.LogError(err.Error())
 		}

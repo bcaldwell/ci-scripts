@@ -6,7 +6,7 @@ jobs:
   release:
     docker:
       # specify the version
-      - image: cimg/go:1.20.0
+      - image: golang:1.23.0
     environment:
       CI_SCRIPTS_CONFIG: ./.circleci/ci_scripts.yml
       GITHUB_RELEASE_TAG: latest
@@ -22,7 +22,7 @@ jobs:
 
   release-docker:
     docker:
-      - image: cimg/go:1.20.0
+      - image: benjamincaldwell/ci-scripts
 
     steps:
       - checkout
