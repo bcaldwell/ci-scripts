@@ -27,7 +27,6 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - run: go install ./cmd/ciscripts/ci-scripts.go
       - run:
           name: Build and pushing docker image
           command: ci-scripts docker/build_and_push_image --docker-images-dockerRepo benjamincaldwell/ci-scripts
