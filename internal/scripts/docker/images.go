@@ -98,7 +98,7 @@ func (b *DockerBase) setup() {
 
 	b.DockerUser, _ = c.ConfigFetch("docker.user")
 
-	dockerTagsString, _ := c.ConfigFetch("docker.tags", "_tags, _sha, latest")
+	dockerTagsString, _ := c.ConfigFetch("docker.tags", "_tags, _sha")
 
 	b.DockerTags = strings.Split(dockerTagsString, ",")
 	b.parseTags()
